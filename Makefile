@@ -11,10 +11,11 @@ NPM       ?= npm
 NEXT_DIR   = .next
 OUT_DIR    = out
 SB_DIR     = storybook-static
+COV_DIR    = coverage
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev build start lint storybook storybook-build \
-        check clean clean-build clean-deps reinstall
+.PHONY: help install dev build start lint test test-watch coverage \
+        storybook storybook-build check clean clean-build clean-deps reinstall
 
 # -----------------------------------------------------------------------------
 # Help
@@ -51,6 +52,19 @@ lint: ## Run ESLint
 	$(NPM) run lint
 
 # -----------------------------------------------------------------------------
+# Tests
+# -----------------------------------------------------------------------------
+
+test: ## Run unit tests once (vitest)
+	$(NPM) run test
+
+test-watch: ## Run unit tests in watch mode
+	$(NPM) run test:watch
+
+coverage: ## Run unit tests with coverage report (text + html in ./coverage)
+	$(NPM) run test:coverage
+
+# -----------------------------------------------------------------------------
 # Storybook
 # -----------------------------------------------------------------------------
 
@@ -64,15 +78,15 @@ storybook-build: ## Build the static Storybook into ./storybook-static
 # Quality gate
 # -----------------------------------------------------------------------------
 
-check: lint build storybook-build ## Lint + Next build + Storybook build (CI gate)
+check: lint test build storybook-build ## Lint + tests + Next build + Storybook build (CI gate)
 	@printf "\n\033[32m✓ All checks passed.\033[0m\n"
 
 # -----------------------------------------------------------------------------
 # Cleanup
 # -----------------------------------------------------------------------------
 
-clean-build: ## Remove .next, out, storybook-static
-	rm -rf $(NEXT_DIR) $(OUT_DIR) $(SB_DIR)
+clean-build: ## Remove .next, out, storybook-static, coverage
+	rm -rf $(NEXT_DIR) $(OUT_DIR) $(SB_DIR) $(COV_DIR)
 
 clean-deps: ## Remove node_modules
 	rm -rf node_modules

@@ -1,5 +1,7 @@
 # andersonmagalhaes.dev
 
+![Coverage](https://img.shields.io/badge/coverage-96%25-brightgreen)
+
 Personal site and developer toolkit for **Anderson Magalhaes** — Software Engineer with 15+ years of experience. Built as a static Next.js application, fully bilingual (EN / BR), and packed with browser-based developer tools.
 
 > Live: [andersonmagalhaes.dev](https://andersonmagalhaes.dev)
@@ -129,8 +131,10 @@ make dev             # Next.js dev server  → http://localhost:3000
 make storybook       # Storybook dev server → http://localhost:6006
 make build           # static export to ./out (postbuild copies .htaccess)
 make lint            # ESLint
-make check           # lint + next build + storybook build (CI gate)
-make clean           # rm -rf .next out storybook-static
+make test            # Vitest unit tests (When/Then specs in src/lib)
+make coverage        # Vitest with coverage (text + html in ./coverage)
+make check           # lint + tests + next build + storybook build (CI gate)
+make clean           # rm -rf .next out storybook-static coverage
 ```
 
 The plain `npm run …` scripts still work — `make` is just a thin convenience layer.

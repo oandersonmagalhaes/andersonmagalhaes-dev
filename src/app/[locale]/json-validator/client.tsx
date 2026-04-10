@@ -5,32 +5,9 @@ import { useTranslations } from "next-intl";
 import ToolLayout from "@/components/layout/ToolLayout";
 import Button from "@/components/ui/Button";
 import CopyButton from "@/components/ui/CopyButton";
+import { validateJson, type ValidationResult } from "@/lib/json-validate";
 import tools from "../tools.module.css";
 import styles from "./Json.module.css";
-
-interface ValidationResult {
-  valid: boolean;
-  error?: string;
-  line?: number;
-}
-
-function validateJson(input: string): ValidationResult {
-  if (!input.trim()) return { valid: false };
-  try {
-    JSON.parse(input);
-    return { valid: true };
-  } catch (e) {
-    const message = e instanceof SyntaxError ? e.message : "Invalid JSON";
-    // Try to extract line number from error message
-    const lineMatch = message.match(/position (\d+)/);
-    let line: number | undefined;
-    if (lineMatch) {
-      const pos = parseInt(lineMatch[1]);
-      line = input.slice(0, pos).split("\n").length;
-    }
-    return { valid: false, error: message, line };
-  }
-}
 
 export default function JsonValidatorClient() {
   const t = useTranslations("tools");
