@@ -11,12 +11,16 @@
 !.yarn/versions
 .playwright*
 .claude
+*.local.md
 # testing
 /coverage
 
 # next.js
 /.next/
 /out/
+
+# storybook
+/storybook-static/
 
 # production
 /build

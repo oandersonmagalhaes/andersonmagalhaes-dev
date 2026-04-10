@@ -134,6 +134,50 @@ The `postbuild` script copies `.htaccess` into `out/` so the bundle can be uploa
 
 ---
 
+## Storybook
+
+Every component lives in **Storybook 10** (`@storybook/nextjs`) so it can be developed, reviewed and demoed in isolation. Stories cover the three component layers — `ui/`, `layout/` and `sections/` — and the preview is wired with Tailwind v4, the dark theme background, and a `NextIntlClientProvider` decorator that uses the real `en.json` / `br.json` message bundles. A locale switcher in the toolbar lets you flip every story between English and Portuguese.
+
+```bash
+npm run storybook         # http://localhost:6006
+npm run build-storybook   # static build into ./storybook-static
+```
+
+### UI primitives
+
+| | |
+|---|---|
+| `Button` — variants, sizes, disabled | `Badge` — orange / emerald / gray |
+| ![Button stories](docs/screenshots/storybook/01-button.png) | ![Badge stories](docs/screenshots/storybook/02-badge.png) |
+| `Card` — base container used across the site | `ToolLayout` — shared shell for every developer tool |
+| ![Card story](docs/screenshots/storybook/03-card.png) | ![ToolLayout story](docs/screenshots/storybook/09-tool-layout.png) |
+
+### Layout
+
+The fixed header is rendered with the Next.js navigation mock, including the active-section state and the Tools dropdown.
+
+![Header story](docs/screenshots/storybook/04-header.png)
+
+### Sections
+
+Every landing-page section is a standalone story, rendered against the live `next-intl` messages.
+
+![HeroSection story](docs/screenshots/storybook/05-hero-section.png)
+
+![ProjectsSection story](docs/screenshots/storybook/06-projects-section.png)
+
+![ExperienceSection story](docs/screenshots/storybook/07-experience-section.png)
+
+![SkillsSection story](docs/screenshots/storybook/08-skills-section.png)
+
+### Locale switching
+
+The same `Hero` story rendered with the toolbar locale flipped to **Português (BR)** — proof that the `NextIntlClientProvider` decorator picks up the active globals.
+
+![HeroSection in Portuguese](docs/screenshots/storybook/10-locale-br.png)
+
+---
+
 ## Project Structure
 
 ```
