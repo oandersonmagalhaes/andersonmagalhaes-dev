@@ -1,0 +1,185 @@
+{
+  "nav": {
+    "about": "Sobre",
+    "experience": "Experiência",
+    "projects": "Projetos",
+    "skills": "Skills",
+    "contact": "Contato",
+    "tools": "Ferramentas"
+  },
+  "hero": {
+    "greeting": "Olá, eu sou",
+    "role": "Software Engineer",
+    "description": "Construindo soluções robustas há mais de 15 anos. Apaixonado por arquitetura, qualidade e segurança.",
+    "cta": {
+      "projects": "Ver meus projetos",
+      "contact": "Entre em contato"
+    }
+  },
+  "about": {
+    "title": "Sobre Mim",
+    "bio": "Sou um Engenheiro de Software com mais de 15 anos de experiência construindo soluções escaláveis em todo o stack. Minha trajetória abrange desde sistemas backend até interfaces frontend, com forte foco em qualidade de código, segurança e infraestrutura."
+  },
+  "experience": {
+    "title": "Experiência",
+    "current": "Atual",
+    "present": "Atual"
+  },
+  "projects": {
+    "title": "Projetos",
+    "viewCode": "Ver Código",
+    "viewDemo": "Demo"
+  },
+  "skills": {
+    "title": "Skills & Tecnologias",
+    "categories": {
+      "languages": "Linguagens",
+      "frameworks": "Frameworks",
+      "infrastructure": "Infraestrutura",
+      "tools": "Ferramentas & Práticas",
+      "security": "Segurança"
+    }
+  },
+  "contact": {
+    "title": "Entre em Contato",
+    "description": "Estou sempre aberto a discutir novos projetos, ideias ou oportunidades. Fique à vontade para entrar em contato por qualquer um dos meus canais."
+  },
+  "tools": {
+    "title": "Ferramentas de Desenvolvimento",
+    "back": "Voltar ao Início",
+    "copy": "Copiar",
+    "copied": "Copiado!",
+    "clear": "Limpar",
+    "generate": "Gerar",
+    "encode": "Codificar",
+    "decode": "Decodificar",
+    "validate": "Validar",
+    "format": "Formatar",
+    "minify": "Minificar",
+    "compare": "Comparar",
+    "input": "Entrada",
+    "output": "Saída",
+    "base64": {
+      "title": "Tradutor Base64",
+      "description": "Codifique e decodifique strings Base64 com suporte a UTF-8.",
+      "inputPlaceholder": "Digite o texto para codificar...",
+      "outputPlaceholder": "A saída Base64 aparecerá aqui..."
+    },
+    "uuid4": {
+      "title": "Gerador UUID4",
+      "description": "Gere identificadores UUID v4 aleatórios.",
+      "bulkGenerate": "Gerar em Lote",
+      "count": "Quantidade"
+    },
+    "uuidFromString": {
+      "title": "UUID a partir de String",
+      "description": "Gere UUID v5 determinístico a partir de qualquer string.",
+      "inputPlaceholder": "Digite uma string para gerar UUID...",
+      "namespace": "Namespace",
+      "namespaceRef": "Referência de Namespace",
+      "emptyState": "Digite uma string acima para gerar um UUID v5."
+    },
+    "password": {
+      "title": "Gerador de Senhas",
+      "description": "Gere senhas aleatórias seguras com regras personalizadas.",
+      "length": "Tamanho",
+      "uppercase": "Maiúsculas (A-Z)",
+      "lowercase": "Minúsculas (a-z)",
+      "numbers": "Números (0-9)",
+      "symbols": "Símbolos (!@#$...)",
+      "weak": "Fraca",
+      "medium": "Média",
+      "strong": "Forte",
+      "veryStrong": "Muito Forte",
+      "noCharset": "Selecione pelo menos um conjunto de caracteres."
+    },
+    "cron": {
+      "title": "Easy Crontab",
+      "description": "Construa e valide expressões cron com um editor visual.",
+      "minute": "Minuto",
+      "hour": "Hora",
+      "dayOfMonth": "Dia (Mês)",
+      "month": "Mês",
+      "dayOfWeek": "Dia (Semana)",
+      "expression": "Expressão",
+      "nextRuns": "Próximas 5 Execuções",
+      "presets": "Presets",
+      "everyMinute": "A cada Minuto",
+      "everyHour": "A cada Hora",
+      "everyDayMidnight": "Diário à Meia-noite",
+      "everyMonday": "Toda Segunda",
+      "everyMonth1st": "Mensal (Dia 1)",
+      "describe": {
+        "everyMinute": "A cada minuto",
+        "everyMinuteOfHour": "A cada minuto da hora {hour}",
+        "everyNMinutes": "A cada {n} minutos",
+        "atMinuteOfEveryHour": "No minuto {minute} de cada hora",
+        "everyNHoursAtMinute": "A cada {n} horas no minuto {minute}",
+        "atTime": "Às {time}",
+        "everyDay": "toda {day}",
+        "onDays": "em {days}",
+        "everyNDaysOfWeek": "a cada {n} dias da semana",
+        "dayOfWeek": "dia-da-semana {value}",
+        "inMonth": "em {month}",
+        "everyNMonths": "a cada {n} meses",
+        "monthValue": "mês {value}",
+        "everyNDays": "a cada {n} dias",
+        "onDay": "no dia {day}",
+        "days": {
+          "0": "Domingo",
+          "1": "Segunda",
+          "2": "Terça",
+          "3": "Quarta",
+          "4": "Quinta",
+          "5": "Sexta",
+          "6": "Sábado"
+        },
+        "months": {
+          "1": "Janeiro",
+          "2": "Fevereiro",
+          "3": "Março",
+          "4": "Abril",
+          "5": "Maio",
+          "6": "Junho",
+          "7": "Julho",
+          "8": "Agosto",
+          "9": "Setembro",
+          "10": "Outubro",
+          "11": "Novembro",
+          "12": "Dezembro"
+        }
+      }
+    },
+    "crontab": {
+      "title": "Easy Crontab",
+      "description": "Construa e valide expressões cron com um editor visual."
+    },
+    "jwt": {
+      "title": "Validador JWT",
+      "description": "Decodifique e inspecione JSON Web Tokens.",
+      "decode": "Decodificar",
+      "inputPlaceholder": "Cole seu token JWT aqui..."
+    },
+    "json": {
+      "title": "Validador JSON",
+      "description": "Valide, formate e minifique dados JSON."
+    },
+    "jsonValidator": {
+      "title": "Validador JSON",
+      "description": "Valide, formate e minifique dados JSON.",
+      "inputPlaceholder": "Cole seu JSON aqui..."
+    },
+    "textCompare": {
+      "title": "Comparar Textos",
+      "description": "Compare dois textos e destaque as diferenças.",
+      "textA": "Texto A",
+      "textB": "Texto B",
+      "placeholderA": "Digite o primeiro texto...",
+      "placeholderB": "Digite o segundo texto..."
+    }
+  },
+  "footer": {
+    "built": "Feito com Next.js",
+    "rights": "Todos os direitos reservados."
+  }
+}

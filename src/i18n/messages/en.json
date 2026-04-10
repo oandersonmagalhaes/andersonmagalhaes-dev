@@ -1,0 +1,185 @@
+{
+  "nav": {
+    "about": "About",
+    "experience": "Experience",
+    "projects": "Projects",
+    "skills": "Skills",
+    "contact": "Contact",
+    "tools": "Tools"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "role": "Software Engineer",
+    "description": "Building robust solutions for over 15 years. Passionate about architecture, quality, and security.",
+    "cta": {
+      "projects": "View my work",
+      "contact": "Get in touch"
+    }
+  },
+  "about": {
+    "title": "About Me",
+    "bio": "I'm a Software Engineer with over 15 years of experience building scalable solutions across the full stack. My journey spans from backend systems to frontend interfaces, with a strong focus on code quality, security, and infrastructure."
+  },
+  "experience": {
+    "title": "Experience",
+    "current": "Current",
+    "present": "Present"
+  },
+  "projects": {
+    "title": "Projects",
+    "viewCode": "View Code",
+    "viewDemo": "Live Demo"
+  },
+  "skills": {
+    "title": "Skills & Technologies",
+    "categories": {
+      "languages": "Languages",
+      "frameworks": "Frameworks",
+      "infrastructure": "Infrastructure",
+      "tools": "Tools & Practices",
+      "security": "Security"
+    }
+  },
+  "contact": {
+    "title": "Get In Touch",
+    "description": "I'm always open to discussing new projects, ideas, or opportunities. Feel free to reach out through any of my social channels."
+  },
+  "tools": {
+    "title": "Developer Tools",
+    "back": "Back to Home",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "clear": "Clear",
+    "generate": "Generate",
+    "encode": "Encode",
+    "decode": "Decode",
+    "validate": "Validate",
+    "format": "Format",
+    "minify": "Minify",
+    "compare": "Compare",
+    "input": "Input",
+    "output": "Output",
+    "base64": {
+      "title": "Base64 Translator",
+      "description": "Encode and decode Base64 strings with UTF-8 support.",
+      "inputPlaceholder": "Enter text to encode...",
+      "outputPlaceholder": "Base64 output will appear here..."
+    },
+    "uuid4": {
+      "title": "UUID4 Generator",
+      "description": "Generate random UUID v4 identifiers.",
+      "bulkGenerate": "Bulk Generate",
+      "count": "Count"
+    },
+    "uuidFromString": {
+      "title": "UUID from String",
+      "description": "Generate deterministic UUID v5 from any string.",
+      "inputPlaceholder": "Enter a string to generate UUID...",
+      "namespace": "Namespace",
+      "namespaceRef": "Namespace Reference",
+      "emptyState": "Enter a string above to generate a UUID v5."
+    },
+    "password": {
+      "title": "Password Generator",
+      "description": "Generate secure random passwords with custom rules.",
+      "length": "Length",
+      "uppercase": "Uppercase (A-Z)",
+      "lowercase": "Lowercase (a-z)",
+      "numbers": "Numbers (0-9)",
+      "symbols": "Symbols (!@#$...)",
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong",
+      "veryStrong": "Very Strong",
+      "noCharset": "Select at least one character set."
+    },
+    "cron": {
+      "title": "Easy Crontab",
+      "description": "Build and validate cron expressions with a visual editor.",
+      "minute": "Minute",
+      "hour": "Hour",
+      "dayOfMonth": "Day (Month)",
+      "month": "Month",
+      "dayOfWeek": "Day (Week)",
+      "expression": "Expression",
+      "nextRuns": "Next 5 Runs",
+      "presets": "Presets",
+      "everyMinute": "Every Minute",
+      "everyHour": "Every Hour",
+      "everyDayMidnight": "Daily at Midnight",
+      "everyMonday": "Every Monday",
+      "everyMonth1st": "Monthly (1st)",
+      "describe": {
+        "everyMinute": "Every minute",
+        "everyMinuteOfHour": "Every minute of hour {hour}",
+        "everyNMinutes": "Every {n} minutes",
+        "atMinuteOfEveryHour": "At minute {minute} of every hour",
+        "everyNHoursAtMinute": "Every {n} hours at minute {minute}",
+        "atTime": "At {time}",
+        "everyDay": "every {day}",
+        "onDays": "on {days}",
+        "everyNDaysOfWeek": "every {n} days of week",
+        "dayOfWeek": "day-of-week {value}",
+        "inMonth": "in {month}",
+        "everyNMonths": "every {n} months",
+        "monthValue": "month {value}",
+        "everyNDays": "every {n} days",
+        "onDay": "on day {day}",
+        "days": {
+          "0": "Sunday",
+          "1": "Monday",
+          "2": "Tuesday",
+          "3": "Wednesday",
+          "4": "Thursday",
+          "5": "Friday",
+          "6": "Saturday"
+        },
+        "months": {
+          "1": "January",
+          "2": "February",
+          "3": "March",
+          "4": "April",
+          "5": "May",
+          "6": "June",
+          "7": "July",
+          "8": "August",
+          "9": "September",
+          "10": "October",
+          "11": "November",
+          "12": "December"
+        }
+      }
+    },
+    "crontab": {
+      "title": "Easy Crontab",
+      "description": "Build and validate cron expressions with a visual editor."
+    },
+    "jwt": {
+      "title": "JWT Validator",
+      "description": "Decode and inspect JSON Web Tokens.",
+      "decode": "Decode",
+      "inputPlaceholder": "Paste your JWT token here..."
+    },
+    "json": {
+      "title": "JSON Validator",
+      "description": "Validate, format, and minify JSON data."
+    },
+    "jsonValidator": {
+      "title": "JSON Validator",
+      "description": "Validate, format, and minify JSON data.",
+      "inputPlaceholder": "Paste your JSON here..."
+    },
+    "textCompare": {
+      "title": "Text Compare",
+      "description": "Compare two texts and highlight the differences.",
+      "textA": "Text A",
+      "textB": "Text B",
+      "placeholderA": "Enter first text...",
+      "placeholderB": "Enter second text..."
+    }
+  },
+  "footer": {
+    "built": "Built with Next.js",
+    "rights": "All rights reserved."
+  }
+}
