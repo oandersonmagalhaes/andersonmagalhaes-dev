@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import ToolLayout from "@/components/layout/ToolLayout";
 import CopyButton from "@/components/ui/CopyButton";
+import tools from "../tools.module.css";
+import styles from "./UuidFromString.module.css";
 
 const NAMESPACES: Record<string, string> = {
   DNS: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
@@ -85,29 +87,25 @@ export default function UuidFromStringClient() {
       titleKey="uuidFromString.title"
       descriptionKey="uuidFromString.description"
     >
-      <div className="space-y-6">
-        {/* Source string input */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-400">
-            {t("input")}
-          </label>
+      <div className={tools.stack}>
+        <div className={tools.field}>
+          <label className={tools.fieldLabel}>{t("input")}</label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t("uuidFromString.inputPlaceholder")}
-            className="w-full h-32 bg-brand-card border border-gray-800 rounded-lg p-4 font-mono text-sm text-gray-100 placeholder:text-gray-600 resize-none focus:outline-none focus:border-brand-orange/50 transition-colors"
+            className={`${tools.textarea} ${tools.textareaSm}`}
           />
         </div>
 
-        {/* Namespace selector */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-400">
+        <div className={tools.field}>
+          <label className={tools.fieldLabel}>
             {t("uuidFromString.namespace")}
           </label>
           <select
             value={namespace}
             onChange={(e) => setNamespace(e.target.value)}
-            className="w-full sm:w-64 bg-brand-card border border-gray-800 rounded-lg px-4 py-2.5 font-mono text-sm text-gray-100 focus:outline-none focus:border-brand-orange/50 transition-colors appearance-none cursor-pointer"
+            className={`${tools.select} ${styles.namespaceSelect}`}
           >
             {Object.keys(NAMESPACES).map((ns) => (
               <option key={ns} value={ns}>
@@ -117,37 +115,29 @@ export default function UuidFromStringClient() {
           </select>
         </div>
 
-        {/* Generated UUID */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-400">
-              {t("output")}
-            </label>
+        <div className={tools.field}>
+          <div className={tools.labelRow}>
+            <label className={tools.fieldLabel}>{t("output")}</label>
             {uuid && <CopyButton text={uuid} />}
           </div>
-          <div className="bg-brand-card border border-gray-800 rounded-lg p-4 min-h-[3.5rem] flex items-center">
+          <div className={styles.outputBox}>
             {uuid ? (
-              <span className="font-mono text-lg text-brand-emerald select-all break-all">
-                {uuid}
-              </span>
+              <span className={styles.outputValue}>{uuid}</span>
             ) : (
-              <span className="font-mono text-sm text-gray-600">
+              <span className={styles.outputEmpty}>
                 {t("uuidFromString.emptyState")}
               </span>
             )}
           </div>
         </div>
 
-        {/* Namespace reference */}
-        <div className="bg-brand-surface border border-gray-800/50 rounded-lg p-4">
-          <p className="text-xs text-gray-500 font-medium mb-2 uppercase tracking-wider">
-            {t("uuidFromString.namespaceRef")}
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+        <div className={styles.refPanel}>
+          <p className={styles.refLabel}>{t("uuidFromString.namespaceRef")}</p>
+          <div className={styles.refList}>
             {Object.entries(NAMESPACES).map(([key, value]) => (
-              <div key={key} className="flex items-center gap-2 text-xs">
-                <span className="text-gray-400 font-medium w-10">{key}</span>
-                <span className="font-mono text-gray-600">{value}</span>
+              <div key={key} className={styles.refItem}>
+                <span className={styles.refKey}>{key}</span>
+                <span className={styles.refValue}>{value}</span>
               </div>
             ))}
           </div>

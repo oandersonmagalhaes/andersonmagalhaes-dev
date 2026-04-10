@@ -20,13 +20,11 @@
     "next": "15.5.15",
     "next-intl": "^4.9.0",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "tailwind-merge": "^3.5.0"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@storybook/nextjs": "^10.3.5",
-    "@tailwindcss/postcss": "^4",
     "@types/diff": "^7.0.2",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -34,7 +32,6 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.15",
     "storybook": "^10.3.5",
-    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }

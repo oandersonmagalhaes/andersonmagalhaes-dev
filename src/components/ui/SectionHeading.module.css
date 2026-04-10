@@ -1,0 +1,25 @@
+.heading {
+  font-size: var(--text-3xl);
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-strong);
+  margin-bottom: var(--space-2);
+  line-height: var(--leading-tight);
+}
+
+@media (min-width: 640px) {
+  .heading {
+    font-size: var(--text-4xl);
+  }
+}
+
+.hash {
+  color: var(--color-brand-orange-light);
+}
+
+.underline {
+  width: 4rem;
+  height: 0.25rem;
+  background-color: var(--color-brand-emerald);
+  border-radius: var(--radius-full);
+}

@@ -7,6 +7,8 @@ import { CaretDown, CaretRight } from "@phosphor-icons/react";
 import ToolLayout from "@/components/layout/ToolLayout";
 import Button from "@/components/ui/Button";
 import CopyButton from "@/components/ui/CopyButton";
+import tools from "../tools.module.css";
+import styles from "./Jwt.module.css";
 
 interface DecodedToken {
   header: Record<string, unknown>;
@@ -53,39 +55,37 @@ function formatExpiration(exp: number): {
 function CollapsibleSection({
   title,
   defaultOpen = true,
-  color,
+  titleClass,
   children,
   copyText,
 }: {
   title: string;
   defaultOpen?: boolean;
-  color: string;
+  titleClass: string;
   children: React.ReactNode;
   copyText?: string;
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="border border-gray-800 rounded-lg overflow-hidden">
+    <div className={styles.collapsible}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-brand-surface hover:bg-brand-surface/80 transition-colors cursor-pointer"
+        className={styles.collapsibleTrigger}
       >
-        <div className="flex items-center gap-2">
+        <div className={styles.collapsibleHeading}>
           {open ? (
-            <CaretDown size={16} className="text-gray-400" />
+            <CaretDown size={16} color="var(--color-text-muted)" />
           ) : (
-            <CaretRight size={16} className="text-gray-400" />
+            <CaretRight size={16} color="var(--color-text-muted)" />
           )}
-          <span className={`text-sm font-medium ${color}`}>{title}</span>
+          <span className={`${styles.collapsibleTitle} ${titleClass}`}>
+            {title}
+          </span>
         </div>
         {copyText && open && <CopyButton text={copyText} />}
       </button>
-      {open && (
-        <div className="p-4 bg-brand-card border-t border-gray-800">
-          {children}
-        </div>
-      )}
+      {open && <div className={styles.collapsibleBody}>{children}</div>}
     </div>
   );
 }
@@ -128,83 +128,68 @@ export default function JwtValidatorClient() {
 
   return (
     <ToolLayout titleKey="jwt.title" descriptionKey="jwt.description">
-      <div className="space-y-6">
-        {/* Input */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-400">
-            {t("input")}
-          </label>
+      <div className={tools.stack}>
+        <div className={tools.field}>
+          <label className={tools.fieldLabel}>{t("input")}</label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t("jwt.inputPlaceholder")}
-            className="w-full h-40 bg-brand-card border border-gray-800 rounded-lg p-4 font-mono text-sm text-gray-100 placeholder:text-gray-600 resize-none focus:outline-none focus:border-brand-orange/50 transition-colors"
+            className={`${tools.textarea} ${tools.textareaMd}`}
           />
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-3">
+        <div className={tools.actionRow}>
           <Button onClick={handleDecode}>{t("jwt.decode")}</Button>
           <Button onClick={handleClear} variant="ghost">
             {t("clear")}
           </Button>
         </div>
 
-        {/* Error */}
-        {error && (
-          <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm font-mono">
-            {error}
-          </div>
-        )}
+        {error && <div className={tools.errorBox}>{error}</div>}
 
-        {/* Expiration info */}
         {expInfo && (
           <div
-            className={`p-3 rounded-lg border text-sm font-mono ${
-              expInfo.expired
-                ? "bg-red-500/10 border-red-500/20 text-red-400"
-                : "bg-brand-emerald/10 border-brand-emerald/20 text-brand-emerald"
+            className={`${styles.expBox} ${
+              expInfo.expired ? styles.expExpired : styles.expValid
             }`}
           >
-            <span className="font-medium">
-              {expInfo.expired ? "⏱ " : "⏱ "}
-            </span>
+            <span className={styles.expIcon}>⏱ </span>
             {expInfo.label}
-            <span className="text-gray-500 ml-2">
+            <span className={styles.expDate}>
               ({new Date(expClaim! * 1000).toLocaleString()})
             </span>
           </div>
         )}
 
-        {/* Decoded sections */}
         {decoded && (
-          <div className="space-y-3">
+          <div className={styles.sections}>
             <CollapsibleSection
               title="Header"
-              color="text-brand-orange"
+              titleClass={styles.titleOrange}
               copyText={JSON.stringify(decoded.header, null, 2)}
             >
-              <pre className="font-mono text-sm text-brand-orange whitespace-pre-wrap break-all">
+              <pre className={`${styles.pre} ${styles.preOrange}`}>
                 {JSON.stringify(decoded.header, null, 2)}
               </pre>
             </CollapsibleSection>
 
             <CollapsibleSection
               title="Payload"
-              color="text-brand-emerald"
+              titleClass={styles.titleEmerald}
               copyText={JSON.stringify(decoded.payload, null, 2)}
             >
-              <pre className="font-mono text-sm text-brand-emerald whitespace-pre-wrap break-all">
+              <pre className={`${styles.pre} ${styles.preEmerald}`}>
                 {JSON.stringify(decoded.payload, null, 2)}
               </pre>
             </CollapsibleSection>
 
             <CollapsibleSection
               title="Signature"
-              color="text-purple-400"
+              titleClass={styles.titlePurple}
               defaultOpen={false}
             >
-              <pre className="font-mono text-xs text-purple-400 whitespace-pre-wrap break-all">
+              <pre className={`${styles.pre} ${styles.preXs} ${styles.prePurple}`}>
                 {decoded.signature}
               </pre>
             </CollapsibleSection>

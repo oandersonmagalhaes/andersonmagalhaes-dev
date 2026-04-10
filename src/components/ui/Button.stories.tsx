@@ -48,9 +48,15 @@ export const Disabled: Story = {
   args: { disabled: true },
 };
 
+const rowStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: "0.75rem",
+};
+
 export const AllVariants: Story = {
   render: () => (
-    <div className="flex items-center gap-3">
+    <div style={rowStyle}>
       <Button variant="primary">Primary</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="ghost">Ghost</Button>
@@ -60,7 +66,7 @@ export const AllVariants: Story = {
 
 export const AllSizes: Story = {
   render: () => (
-    <div className="flex items-center gap-3">
+    <div style={rowStyle}>
       <Button size="sm">Small</Button>
       <Button size="md">Medium</Button>
       <Button size="lg">Large</Button>

@@ -1,0 +1,204 @@
+/* ----------------------------------------------------------------------------
+ * Shared primitives used by every tool client.
+ * Each tool's local module composes from these so layout/colour decisions
+ * (panels, inputs, error boxes, eyebrows, ...) live in one place.
+ * ------------------------------------------------------------------------- */
+
+/* Vertical stack ---------------------------------------------------------- */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.stackTight {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Panel — base elevated container ---------------------------------------- */
+
+.panel {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.panelTight {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.panelInset {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+/* Field group ------------------------------------------------------------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fieldLabel {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+
+.eyebrow {
+  font-size: var(--text-xs);
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: var(--weight-medium);
+}
+
+/* Form controls ---------------------------------------------------------- */
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-strong);
+  transition: border-color var(--transition-base);
+  outline: none;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-text-faint);
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  border-color: var(--color-orange-50);
+}
+
+.textarea {
+  padding: var(--space-4);
+  resize: none;
+  display: block;
+}
+
+.textareaResizeY {
+  resize: vertical;
+}
+
+.select {
+  cursor: pointer;
+  appearance: none;
+}
+
+/* Variants on the standard textarea height ------------------------------- */
+
+.textareaSm {
+  height: 8rem;
+}
+
+.textareaMd {
+  height: 10rem;
+}
+
+.textareaLg {
+  height: 12rem;
+}
+
+.textareaXl {
+  height: 14rem;
+}
+
+.textareaHuge {
+  height: 16rem;
+}
+
+/* Inset version (for nested cards) -------------------------------------- */
+
+.inputInset {
+  background-color: var(--color-surface);
+}
+
+.textareaInset {
+  background-color: var(--color-surface);
+}
+
+/* Status boxes ---------------------------------------------------------- */
+
+.errorBox {
+  padding: var(--space-3);
+  background-color: var(--color-error-bg);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-lg);
+  color: #f87171;
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+}
+
+.successBox {
+  padding: var(--space-3);
+  background-color: var(--color-emerald-10);
+  border: 1px solid var(--color-emerald-20);
+  border-radius: var(--radius-lg);
+  color: var(--color-brand-emerald);
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+}
+
+/* Action row ------------------------------------------------------------ */
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.actionRowEnd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Misc helpers ---------------------------------------------------------- */
+
+.fullWidthBtn {
+  width: 100%;
+}
+
+.selectAll {
+  user-select: all;
+}
+
+.monoOutput {
+  font-family: var(--font-mono);
+  white-space: pre-wrap;
+  word-break: break-all;
+}

@@ -7,6 +7,7 @@ import { useActiveSection } from "@/hooks/useActiveSection";
 import { List, X, Wrench, CaretDown } from "@phosphor-icons/react";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
+import styles from "./Header.module.css";
 
 const navItems = ["about", "experience", "projects", "skills", "contact"] as const;
 
@@ -33,17 +34,13 @@ export default function Header() {
   const otherLocale = locale === "en" ? "br" : "en";
   const otherLocaleLabel = locale === "en" ? "BR" : "EN";
 
-  // Detect if we're on the home page (root of locale)
   const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
 
-  // Build nav anchor href: if on home, use #section; otherwise link to home with anchor
   const navHref = (section: string) =>
     isHome ? `#${section}` : `/${locale}/#${section}`;
 
-  // Build language switch href: preserve current path, just swap locale
   const switchLocaleHref = () => {
     if (!pathname) return `/${otherLocale}/`;
-    // Replace the leading /locale/ with /otherLocale/
     const newPath = pathname.replace(
       new RegExp(`^/${locale}(/|$)`),
       `/${otherLocale}/`
@@ -52,67 +49,52 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-black/80 backdrop-blur-md border-b border-gray-800/50">
-      <nav className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          href={`/${locale}/`}
-          className="font-mono text-lg font-bold text-brand-orange hover:text-brand-orange-light transition-colors"
-        >
+    <header className={styles.header}>
+      <nav className={`container ${styles.nav}`}>
+        <Link href={`/${locale}/`} className={styles.logo}>
           {"<AM />"}
         </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className={styles.desktopNav}>
           {navItems.map((item) =>
             isHome ? (
               <a
                 key={item}
                 href={navHref(item)}
                 className={cn(
-                  "text-sm transition-colors hover:text-brand-orange",
-                  activeSection === item
-                    ? "text-brand-orange"
-                    : "text-gray-400"
+                  styles.navLink,
+                  activeSection === item && styles.navLinkActive
                 )}
               >
                 {t(item)}
               </a>
             ) : (
-              <Link
-                key={item}
-                href={navHref(item)}
-                className="text-sm text-gray-400 hover:text-brand-orange transition-colors"
-              >
+              <Link key={item} href={navHref(item)} className={styles.navLink}>
                 {t(item)}
               </Link>
             )
           )}
 
-          {/* Tools dropdown */}
-          <div className="relative">
+          <div className={styles.toolsWrapper}>
             <button
               onClick={() => setToolsOpen(!toolsOpen)}
               onBlur={() => setTimeout(() => setToolsOpen(false), 200)}
-              className="flex items-center gap-1 text-sm text-gray-400 hover:text-brand-orange transition-colors cursor-pointer"
+              className={styles.toolsTrigger}
             >
               <Wrench size={16} />
               {t("tools")}
               <CaretDown
                 size={12}
-                className={cn(
-                  "transition-transform",
-                  toolsOpen && "rotate-180"
-                )}
+                className={cn(styles.caret, toolsOpen && styles.caretOpen)}
               />
             </button>
             {toolsOpen && (
-              <div className="absolute top-full right-0 mt-2 w-56 bg-brand-card border border-gray-800 rounded-lg py-2 shadow-xl">
+              <div className={styles.toolsMenu}>
                 {toolRoutes.map((tool) => (
                   <Link
                     key={tool.key}
                     href={`/${locale}${tool.href}/`}
-                    className="block px-4 py-2 text-sm text-gray-400 hover:text-brand-orange hover:bg-brand-surface transition-colors"
+                    className={styles.toolItem}
                   >
                     {tTools(`${tool.key}.title`)}
                   </Link>
@@ -121,45 +103,38 @@ export default function Header() {
             )}
           </div>
 
-          {/* Language switcher */}
-          <Link
-            href={switchLocaleHref()}
-            className="text-xs font-mono px-2 py-1 border border-gray-700 rounded text-gray-400 hover:text-brand-emerald hover:border-brand-emerald transition-colors"
-          >
+          <Link href={switchLocaleHref()} className={styles.langSwitch}>
             {otherLocaleLabel}
           </Link>
         </div>
 
-        {/* Mobile menu button */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden text-gray-400 hover:text-brand-orange transition-colors cursor-pointer"
+          className={styles.mobileToggle}
+          aria-label="Toggle menu"
         >
           {mobileOpen ? <X size={24} /> : <List size={24} />}
         </button>
       </nav>
 
-      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-brand-card border-t border-gray-800">
-          <div className="px-4 py-4 space-y-3">
+        <div className={styles.mobileMenu}>
+          <div className={styles.mobileInner}>
             {navItems.map((item) => (
               <Link
                 key={item}
                 href={navHref(item)}
                 onClick={() => setMobileOpen(false)}
                 className={cn(
-                  "block text-sm transition-colors",
-                  isHome && activeSection === item
-                    ? "text-brand-orange"
-                    : "text-gray-400 hover:text-brand-orange"
+                  styles.navLink,
+                  isHome && activeSection === item && styles.navLinkActive
                 )}
               >
                 {t(item)}
               </Link>
             ))}
-            <div className="pt-2 border-t border-gray-800">
-              <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
+            <div className={styles.mobileGroup}>
+              <p className={styles.mobileGroupLabel}>
                 <Wrench size={12} /> {t("tools")}
               </p>
               {toolRoutes.map((tool) => (
@@ -167,17 +142,17 @@ export default function Header() {
                   key={tool.key}
                   href={`/${locale}${tool.href}/`}
                   onClick={() => setMobileOpen(false)}
-                  className="block py-1.5 text-sm text-gray-400 hover:text-brand-orange transition-colors"
+                  className={styles.mobileToolItem}
                 >
                   {tTools(`${tool.key}.title`)}
                 </Link>
               ))}
             </div>
-            <div className="pt-2 border-t border-gray-800">
+            <div className={styles.mobileGroup}>
               <Link
                 href={switchLocaleHref()}
                 onClick={() => setMobileOpen(false)}
-                className="text-xs font-mono text-gray-400 hover:text-brand-emerald"
+                className={styles.mobileLangLink}
               >
                 {otherLocaleLabel === "BR"
                   ? "Mudar para Português"

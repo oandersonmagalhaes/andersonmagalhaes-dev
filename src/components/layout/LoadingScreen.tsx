@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import styles from "./LoadingScreen.module.css";
 
 const TARGET = "Anderson Magalhaes";
 const CHARS = "!<>-_\\/[]{}—=+*^?#________ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -15,7 +16,6 @@ export default function LoadingScreen() {
   const [text, setText] = useState(" ".repeat(TARGET.length));
 
   useEffect(() => {
-    // If user has seen the loader recently, skip it
     if (typeof window !== "undefined") {
       const seen = sessionStorage.getItem("am-loader-seen");
       if (seen) {
@@ -65,21 +65,17 @@ export default function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
-          className="fixed inset-0 z-[100] bg-brand-black flex items-center justify-center"
+          className={styles.overlay}
         >
-          <div className="text-center">
-            <p className="text-brand-emerald font-mono text-xs sm:text-sm mb-4 tracking-widest">
-              {"> DECRYPTING..."}
-            </p>
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-mono font-bold text-brand-orange tracking-tight">
-              {text}
-            </h1>
-            <div className="mt-6 h-1 w-48 sm:w-64 mx-auto bg-gray-800 rounded-full overflow-hidden">
+          <div className={styles.inner}>
+            <p className={styles.label}>{"> DECRYPTING..."}</p>
+            <h1 className={styles.title}>{text}</h1>
+            <div className={styles.bar}>
               <motion.div
                 initial={{ width: "0%" }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 1.8, ease: "easeInOut" }}
-                className="h-full bg-gradient-to-r from-brand-orange to-brand-emerald"
+                className={styles.barFill}
               />
             </div>
           </div>

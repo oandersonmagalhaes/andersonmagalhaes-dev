@@ -4,6 +4,7 @@ import { Copy, Check } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { cn } from "@/lib/cn";
+import styles from "./CopyButton.module.css";
 
 interface CopyButtonProps {
   text: string;
@@ -17,13 +18,7 @@ export default function CopyButton({ text, className }: CopyButtonProps) {
   return (
     <button
       onClick={() => copy(text)}
-      className={cn(
-        "inline-flex items-center gap-1.5 text-xs font-mono px-2 py-1 rounded transition-colors cursor-pointer",
-        copied
-          ? "text-brand-emerald bg-brand-emerald/10"
-          : "text-gray-400 hover:text-brand-orange bg-brand-surface hover:bg-brand-surface/80",
-        className
-      )}
+      className={cn(styles.button, copied && styles.copied, className)}
     >
       {copied ? (
         <>

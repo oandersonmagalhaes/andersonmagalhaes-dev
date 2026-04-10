@@ -20,7 +20,7 @@ type Story = StoryObj<typeof Header>;
 
 export const OnHome: Story = {
   render: () => (
-    <div className="min-h-[300px] bg-brand-black">
+    <div style={{ minHeight: 300, backgroundColor: "var(--color-bg)" }}>
       <Header />
     </div>
   ),
@@ -36,7 +36,7 @@ export const OnToolPage: Story = {
     },
   },
   render: () => (
-    <div className="min-h-[300px] bg-brand-black">
+    <div style={{ minHeight: 300, backgroundColor: "var(--color-bg)" }}>
       <Header />
     </div>
   ),
@@ -53,7 +53,7 @@ export const PortugueseLocale: Story = {
     },
   },
   render: () => (
-    <div className="min-h-[300px] bg-brand-black">
+    <div style={{ minHeight: 300, backgroundColor: "var(--color-bg)" }}>
       <Header />
     </div>
   ),

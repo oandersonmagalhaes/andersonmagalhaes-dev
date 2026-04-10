@@ -3,7 +3,7 @@ import React from "react";
 import { NextIntlClientProvider } from "next-intl";
 import enMessages from "../src/i18n/messages/en.json";
 import brMessages from "../src/i18n/messages/br.json";
-import "../src/app/globals.css";
+import "../src/styles/globals.css";
 
 const messagesByLocale: Record<string, Record<string, unknown>> = {
   en: enMessages,

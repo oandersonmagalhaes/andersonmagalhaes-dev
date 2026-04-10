@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Badge from "@/components/ui/Badge";
 import { skillCategories } from "@/data/skills";
+import styles from "./SkillsSection.module.css";
 
 const containerVariants = {
   hidden: {},
@@ -29,38 +30,34 @@ export default function SkillsSection() {
   const t = useTranslations("skills");
 
   return (
-    <section id="skills" className="py-20 sm:py-32">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <SectionHeading title={t("title")} className="mb-12" />
+    <section id="skills" className="section">
+      <div className="container">
+        <SectionHeading title={t("title")} />
 
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="space-y-10"
+          className={styles.list}
         >
           {skillCategories.map((category, categoryIndex) => {
-            const variant = categoryIndex % 2 === 0 ? "orange" : "emerald";
+            const isOrange = categoryIndex % 2 === 0;
+            const variant = isOrange ? "orange" : "emerald";
+            const accentClass = isOrange
+              ? styles.accentOrange
+              : styles.accentEmerald;
 
             return (
               <motion.div key={category.key} variants={groupVariants}>
-                <h3 className="text-sm font-mono font-semibold text-gray-300 uppercase tracking-wider mb-4">
-                  <span
-                    className={
-                      categoryIndex % 2 === 0
-                        ? "text-brand-orange"
-                        : "text-brand-emerald"
-                    }
-                  >
-                    {"//"}
-                  </span>{" "}
+                <h3 className={styles.categoryLabel}>
+                  <span className={accentClass}>{"//"}</span>{" "}
                   {t(`categories.${category.key}`)}
                 </h3>
 
                 <motion.div
                   variants={containerVariants}
-                  className="flex flex-wrap gap-2"
+                  className={styles.chips}
                 >
                   {category.skills.map((skill) => (
                     <motion.div key={skill} variants={chipVariants}>

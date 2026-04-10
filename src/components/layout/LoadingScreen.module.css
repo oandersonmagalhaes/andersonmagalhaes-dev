@@ -1,0 +1,73 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  background-color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inner {
+  text-align: center;
+}
+
+.label {
+  color: var(--color-brand-emerald);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  margin-bottom: var(--space-4);
+  letter-spacing: 0.2em;
+}
+
+@media (min-width: 640px) {
+  .label {
+    font-size: var(--text-sm);
+  }
+}
+
+.title {
+  font-size: var(--text-2xl);
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  color: var(--color-brand-orange-light);
+  letter-spacing: -0.025em;
+  white-space: pre;
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: var(--text-4xl);
+  }
+}
+
+@media (min-width: 1024px) {
+  .title {
+    font-size: var(--text-5xl);
+  }
+}
+
+.bar {
+  margin-top: var(--space-6);
+  height: 0.25rem;
+  width: 12rem;
+  margin-inline: auto;
+  background-color: var(--color-border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .bar {
+    width: 16rem;
+  }
+}
+
+.barFill {
+  height: 100%;
+  background-image: linear-gradient(
+    to right,
+    var(--color-brand-orange),
+    var(--color-brand-emerald)
+  );
+}

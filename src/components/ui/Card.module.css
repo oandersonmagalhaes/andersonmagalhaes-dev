@@ -1,0 +1,14 @@
+.card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.hoverable {
+  transition: border-color var(--transition-slow);
+}
+
+.hoverable:hover {
+  border-color: var(--color-orange-50);
+}

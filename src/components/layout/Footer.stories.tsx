@@ -14,7 +14,7 @@ type Story = StoryObj<typeof Footer>;
 
 export const Default: Story = {
   render: () => (
-    <div className="bg-brand-black">
+    <div style={{ backgroundColor: "var(--color-bg)" }}>
       <Footer />
     </div>
   ),

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import styles from "./Button.module.css";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "ghost";
@@ -15,19 +16,7 @@ export default function Button({
 }: ButtonProps) {
   return (
     <button
-      className={cn(
-        "inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200 cursor-pointer",
-        variant === "primary" &&
-          "bg-brand-orange text-white hover:bg-brand-orange-light",
-        variant === "secondary" &&
-          "border border-brand-emerald text-brand-emerald hover:bg-brand-emerald/10",
-        variant === "ghost" &&
-          "text-gray-400 hover:text-gray-100 hover:bg-brand-surface",
-        size === "sm" && "text-sm px-3 py-1.5",
-        size === "md" && "text-sm px-4 py-2",
-        size === "lg" && "text-base px-6 py-3",
-        className
-      )}
+      className={cn(styles.button, styles[variant], styles[size], className)}
       {...props}
     >
       {children}

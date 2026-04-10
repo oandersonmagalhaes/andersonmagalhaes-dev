@@ -25,8 +25,17 @@ type Story = StoryObj<typeof ToolLayout>;
 export const Base64: Story = {
   render: (args) => (
     <ToolLayout {...args}>
-      <div className="bg-brand-card border border-gray-800 rounded-lg p-6">
-        <p className="text-gray-400 text-sm">Tool content goes here.</p>
+      <div
+        style={{
+          backgroundColor: "var(--color-card)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-lg)",
+          padding: "1.5rem",
+        }}
+      >
+        <p style={{ color: "var(--color-text-muted)", fontSize: "0.875rem" }}>
+          Tool content goes here.
+        </p>
       </div>
     </ToolLayout>
   ),
@@ -39,8 +48,17 @@ export const JwtValidator: Story = {
   },
   render: (args) => (
     <ToolLayout {...args}>
-      <div className="bg-brand-card border border-gray-800 rounded-lg p-6">
-        <p className="text-gray-400 text-sm">JWT decoder placeholder.</p>
+      <div
+        style={{
+          backgroundColor: "var(--color-card)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-lg)",
+          padding: "1.5rem",
+        }}
+      >
+        <p style={{ color: "var(--color-text-muted)", fontSize: "0.875rem" }}>
+          JWT decoder placeholder.
+        </p>
       </div>
     </ToolLayout>
   ),

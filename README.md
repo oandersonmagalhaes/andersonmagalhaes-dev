@@ -12,11 +12,13 @@ Personal site and developer toolkit for **Anderson Magalhaes** — Software Engi
 |---|---|
 | Framework | **Next.js 15** (App Router, static export) |
 | Language | **TypeScript** (strict) |
-| Styling | **Tailwind CSS v4** with a custom dark theme |
+| Styling | **Vanilla CSS** — design tokens (`src/styles/tokens.css`) + CSS Modules per component |
+| Component workshop | **Storybook 10** (`@storybook/nextjs`) |
 | Animations | **Framer Motion** (scroll reveals, hero, loader) |
 | i18n | **next-intl** (`/en/` and `/br/` routes, fully static) |
 | Icons | **Phosphor Icons** |
 | Hosting | **Hostinger** (Apache `.htaccess` routing) |
+| Task runner | **Makefile** wrapping the npm scripts |
 
 Color palette: orange `#F97316`, emerald `#10B981`, black `#0A0A0A`.
 Typography: `JetBrains Mono` (code/identity) + `Inter` (body).
@@ -119,18 +121,39 @@ The "Tools" dropdown in the header gives quick access to every utility, also loc
 
 ## Running Locally
 
-```bash
-npm install
-npm run dev          # http://localhost:3000
-```
-
-Build the static site:
+A `Makefile` wraps every common task — run `make` (or `make help`) to list them.
 
 ```bash
-npm run build        # outputs to ./out
+make install         # install dependencies
+make dev             # Next.js dev server  → http://localhost:3000
+make storybook       # Storybook dev server → http://localhost:6006
+make build           # static export to ./out (postbuild copies .htaccess)
+make lint            # ESLint
+make check           # lint + next build + storybook build (CI gate)
+make clean           # rm -rf .next out storybook-static
 ```
 
-The `postbuild` script copies `.htaccess` into `out/` so the bundle can be uploaded as-is to Hostinger `public_html`.
+The plain `npm run …` scripts still work — `make` is just a thin convenience layer.
+
+The `postbuild` step copies `.htaccess` into `out/` so the bundle can be uploaded as-is to Hostinger `public_html`.
+
+## Styling architecture
+
+There is no Tailwind, no PostCSS plugin, no utility-class soup. Everything is plain CSS, organized in two layers:
+
+```
+src/styles/
+├── tokens.css      # ← single source of truth: colors, spacing, fonts,
+│                   #   radii, shadows, transitions, breakpoints, z-index
+└── globals.css     # @imports tokens; reset, body, scrollbar, shared
+                    # layout utilities (.container, .container-tool, .section)
+```
+
+To restyle the site you only edit `tokens.css` — every component reads from CSS variables, so a single value change cascades everywhere.
+
+Each component owns a co-located **CSS Module** (`Button.module.css`, `Header.module.css`, …). Tool clients additionally share `src/app/[locale]/tools.module.css` which exposes reusable primitives — `.panel`, `.field`, `.input`, `.textarea`, `.eyebrow`, `.errorBox`, `.actionRow` and friends — so the eight tool pages stay DRY without duplicating layout decisions.
+
+The `cn()` helper in `src/lib/cn.ts` is a one-line `clsx` wrapper for combining module class names conditionally.
 
 ---
 
@@ -181,34 +204,43 @@ The same `Hero` story rendered with the toolbar locale flipped to **Português (
 ## Project Structure
 
 ```
-src/
-├── app/
-│   ├── [locale]/                # Localized routes (en, br)
-│   │   ├── layout.tsx
-│   │   ├── page.tsx             # Landing page
-│   │   ├── base64-translator/
-│   │   ├── uuid4/
-│   │   ├── uuid-from-string/
-│   │   ├── password-generator/
-│   │   ├── easy-crontab/
-│   │   ├── jwt-validator/
-│   │   ├── json-validator/
-│   │   └── text-compare/
-│   ├── layout.tsx               # Root layout (fonts, base metadata)
-│   └── page.tsx                 # Redirects to /en/
-├── components/
-│   ├── layout/                  # Header, Footer, ToolLayout, LoadingScreen
-│   ├── sections/                # Hero, About, Experience, ...
-│   └── ui/                      # Button, Badge, Card, CopyButton, ...
-├── data/                        # experience, projects, skills, social
-├── hooks/                       # useActiveSection, useCopyToClipboard
-├── i18n/
-│   ├── routing.ts
-│   ├── request.ts
-│   └── messages/
-│       ├── en.json
-│       └── br.json
-└── lib/cn.ts
+.
+├── Makefile                     # task runner (make help)
+├── .storybook/
+│   ├── main.ts
+│   ├── preview.tsx              # globals.css + NextIntlClientProvider decorator
+│   └── preview-head.html        # loads Inter + JetBrains Mono for Storybook
+├── src/
+│   ├── styles/
+│   │   ├── tokens.css           # design tokens (single source of truth)
+│   │   └── globals.css          # reset + .container/.section utilities
+│   ├── app/
+│   │   ├── [locale]/            # Localized routes (en, br)
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx         # Landing page
+│   │   │   ├── tools.module.css # shared CSS primitives for every tool
+│   │   │   ├── base64-translator/  (client.tsx + Base64.module.css)
+│   │   │   ├── uuid4/              (client.tsx + Uuid4.module.css)
+│   │   │   ├── uuid-from-string/   (client.tsx + UuidFromString.module.css)
+│   │   │   ├── password-generator/ (client.tsx + Password.module.css)
+│   │   │   ├── easy-crontab/       (client.tsx + Crontab.module.css)
+│   │   │   ├── jwt-validator/      (client.tsx + Jwt.module.css)
+│   │   │   ├── json-validator/     (client.tsx + Json.module.css)
+│   │   │   └── text-compare/       (client.tsx + TextCompare.module.css)
+│   │   ├── layout.tsx           # Root layout (fonts, base metadata)
+│   │   └── page.tsx             # Redirects to /en/
+│   ├── components/              # each component co-locates a .module.css
+│   │   │                        # and a .stories.tsx
+│   │   ├── layout/              # Header, Footer, ToolLayout, LoadingScreen
+│   │   ├── sections/            # Hero, About, Experience, ...
+│   │   └── ui/                  # Button, Badge, Card, CopyButton, ...
+│   ├── data/                    # experience, projects, skills, social
+│   ├── hooks/                   # useActiveSection, useCopyToClipboard
+│   ├── i18n/
+│   │   ├── routing.ts
+│   │   ├── request.ts
+│   │   └── messages/{en,br}.json
+│   └── lib/cn.ts                # one-line clsx wrapper
 ```
 
 ---

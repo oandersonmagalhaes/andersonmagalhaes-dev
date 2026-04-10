@@ -1,0 +1,145 @@
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-2);
+}
+
+@media (min-width: 640px) {
+  .fieldsGrid {
+    gap: var(--space-4);
+  }
+}
+
+.cronField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.cronFieldLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cronInput {
+  width: 100%;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.625rem var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  text-align: center;
+  color: var(--color-text-strong);
+  outline: none;
+  transition: border-color var(--transition-base);
+}
+
+.cronInput::placeholder {
+  color: var(--color-text-faint);
+}
+
+.cronInput:focus {
+  border-color: var(--color-orange-50);
+}
+
+.cronHint {
+  font-size: 0.625rem;
+  color: var(--color-text-faint);
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+.expressionPanel {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.expressionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.expression {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  color: var(--color-brand-orange-light);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.05em;
+}
+
+@media (min-width: 640px) {
+  .expression {
+    font-size: var(--text-3xl);
+  }
+}
+
+.descriptionBox {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.descriptionText {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+.presetsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.presetsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.runsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.runsList {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.runRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.625rem var(--space-4);
+  font-size: var(--text-sm);
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.runRow:last-child {
+  border-bottom: none;
+}
+
+.runIndex {
+  color: var(--color-text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  width: 1.25rem;
+}
+
+.runDate {
+  font-family: var(--font-mono);
+  color: var(--color-text);
+}

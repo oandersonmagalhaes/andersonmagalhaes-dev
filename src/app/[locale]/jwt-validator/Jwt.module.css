@@ -1,0 +1,110 @@
+.expBox {
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid;
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+}
+
+.expValid {
+  background-color: var(--color-emerald-10);
+  border-color: var(--color-emerald-20);
+  color: var(--color-brand-emerald);
+}
+
+.expExpired {
+  background-color: var(--color-error-bg);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.expIcon {
+  font-weight: var(--weight-medium);
+}
+
+.expDate {
+  color: var(--color-text-dim);
+  margin-left: var(--space-2);
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.collapsible {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.collapsibleTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface);
+  transition: background-color var(--transition-base);
+  cursor: pointer;
+  border: none;
+  color: inherit;
+}
+
+.collapsibleTrigger:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.collapsibleHeading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.collapsibleTitle {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.titleOrange {
+  color: var(--color-brand-orange-light);
+}
+
+.titleEmerald {
+  color: var(--color-brand-emerald);
+}
+
+.titlePurple {
+  color: #c084fc;
+}
+
+.collapsibleBody {
+  padding: var(--space-4);
+  background-color: var(--color-card);
+  border-top: 1px solid var(--color-border);
+}
+
+.pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+}
+
+.preXs {
+  font-size: var(--text-xs);
+}
+
+.preOrange {
+  color: var(--color-brand-orange-light);
+}
+
+.preEmerald {
+  color: var(--color-brand-emerald);
+}
+
+.prePurple {
+  color: #c084fc;
+}

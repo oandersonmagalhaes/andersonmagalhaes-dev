@@ -1,0 +1,23 @@
+.wrapper {
+  margin-top: var(--space-12);
+  max-width: 42rem;
+}
+
+.description {
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-10);
+}
+
+@media (min-width: 640px) {
+  .description {
+    font-size: var(--text-lg);
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}

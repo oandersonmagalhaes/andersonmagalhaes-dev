@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import ToolLayout from "@/components/layout/ToolLayout";
 import Button from "@/components/ui/Button";
 import CopyButton from "@/components/ui/CopyButton";
+import tools from "../tools.module.css";
+import styles from "./Json.module.css";
 
 interface ValidationResult {
   valid: boolean;
@@ -81,13 +83,10 @@ export default function JsonValidatorClient() {
       titleKey="jsonValidator.title"
       descriptionKey="jsonValidator.description"
     >
-      {/* Status indicator */}
       {validation && (
         <div
-          className={`mb-4 p-3 rounded-lg border text-sm font-mono ${
-            validation.valid
-              ? "bg-brand-emerald/10 border-brand-emerald/20 text-brand-emerald"
-              : "bg-red-500/10 border-red-500/20 text-red-400"
+          className={`${styles.statusBox} ${
+            validation.valid ? styles.statusValid : styles.statusInvalid
           }`}
         >
           {validation.valid
@@ -95,7 +94,7 @@ export default function JsonValidatorClient() {
             : validation.error && (
                 <>
                   {validation.line && (
-                    <span className="text-red-300">
+                    <span className={styles.statusLine}>
                       {t("jsonValidator.line")} {validation.line}:{" "}
                     </span>
                   )}
@@ -105,13 +104,10 @@ export default function JsonValidatorClient() {
         </div>
       )}
 
-      {/* Input */}
-      <div className="bg-brand-card border border-gray-800 rounded-lg p-6 mb-4">
-        <div className="flex items-center justify-between mb-3">
-          <label className="text-sm font-medium text-gray-400">
-            {t("input")}
-          </label>
-          <div className="flex items-center gap-2">
+      <div className={`${tools.panel} ${styles.inputPanel}`}>
+        <div className={tools.fieldRow}>
+          <label className={tools.fieldLabel}>{t("input")}</label>
+          <div className={tools.actionRowEnd}>
             <Button onClick={handleFormat} size="sm">
               {t("format")}
             </Button>
@@ -128,23 +124,18 @@ export default function JsonValidatorClient() {
           onChange={(e) => handleInputChange(e.target.value)}
           placeholder={t("jsonValidator.inputPlaceholder")}
           spellCheck={false}
-          className="w-full h-64 bg-brand-surface border border-gray-800 rounded-lg p-4 font-mono text-sm text-gray-100 placeholder:text-gray-600 resize-y focus:outline-none focus:border-brand-orange/50 transition-colors"
+          className={`${tools.textarea} ${tools.textareaInset} ${tools.textareaResizeY} ${tools.textareaHuge}`}
         />
       </div>
 
-      {/* Output */}
       {output && (
-        <div className="bg-brand-card border border-gray-800 rounded-lg p-6">
-          <div className="flex items-center justify-between mb-3">
-            <label className="text-sm font-medium text-gray-400">
-              {t("output")}
-            </label>
+        <div className={tools.panel}>
+          <div className={tools.fieldRow}>
+            <label className={tools.fieldLabel}>{t("output")}</label>
             <CopyButton text={output} />
           </div>
-          <pre className="bg-brand-surface border border-gray-800 rounded-lg p-4 overflow-x-auto max-h-96 overflow-y-auto">
-            <code className="font-mono text-sm text-brand-emerald whitespace-pre">
-              {output}
-            </code>
+          <pre className={styles.codeBlock}>
+            <code className={styles.code}>{output}</code>
           </pre>
         </div>
       )}

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import styles from "./Badge.module.css";
 
 interface BadgeProps {
   children: React.ReactNode;
@@ -12,18 +13,7 @@ export default function Badge({
   className,
 }: BadgeProps) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center px-3 py-1 rounded-full text-xs font-mono",
-        variant === "orange" &&
-          "bg-brand-orange/10 text-brand-orange border border-brand-orange/20",
-        variant === "emerald" &&
-          "bg-brand-emerald/10 text-brand-emerald border border-brand-emerald/20",
-        variant === "gray" &&
-          "bg-gray-800/50 text-gray-400 border border-gray-700/50",
-        className
-      )}
-    >
+    <span className={cn(styles.badge, styles[variant], className)}>
       {children}
     </span>
   );

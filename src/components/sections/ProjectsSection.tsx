@@ -7,6 +7,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import { projects } from "@/data/projects";
+import styles from "./ProjectsSection.module.css";
 
 const containerVariants = {
   hidden: {},
@@ -27,32 +28,30 @@ export default function ProjectsSection() {
   const locale = useLocale();
 
   return (
-    <section id="projects" className="py-20 sm:py-32">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <SectionHeading title={t("title")} className="mb-12" />
+    <section id="projects" className="section">
+      <div className="container">
+        <SectionHeading title={t("title")} />
 
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          className={styles.grid}
         >
           {projects.map((project) => (
             <motion.div key={project.name} variants={itemVariants}>
-              <Card className="h-full flex flex-col">
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <h3 className="text-lg font-semibold text-gray-100 font-mono">
-                    {project.name}
-                  </h3>
-                  <div className="flex items-center gap-2 shrink-0">
+              <Card className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <h3 className={styles.name}>{project.name}</h3>
+                  <div className={styles.actions}>
                     {project.github && (
                       <a
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`${project.name} GitHub`}
-                        className="text-gray-400 hover:text-brand-orange transition-colors duration-200"
+                        className={styles.actionGithub}
                       >
                         <GithubLogo size={20} weight="regular" />
                       </a>
@@ -65,7 +64,7 @@ export default function ProjectsSection() {
                             : project.demo
                         }
                         aria-label={`${project.name} Demo`}
-                        className="text-gray-400 hover:text-brand-emerald transition-colors duration-200"
+                        className={styles.actionDemo}
                       >
                         <ArrowSquareOut size={20} weight="regular" />
                       </a>
@@ -73,13 +72,13 @@ export default function ProjectsSection() {
                   </div>
                 </div>
 
-                <p className="text-gray-400 text-sm leading-relaxed mb-4 flex-1">
+                <p className={styles.description}>
                   {locale === "en"
                     ? project.description.en
                     : project.description.ptBr}
                 </p>
 
-                <div className="flex flex-wrap gap-2">
+                <div className={styles.tags}>
                   {project.technologies.map((tech) => (
                     <Badge key={tech} variant="gray">
                       {tech}

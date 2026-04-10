@@ -6,6 +6,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import { experiences } from "@/data/experience";
+import styles from "./ExperienceSection.module.css";
 
 const containerVariants = {
   hidden: {},
@@ -26,49 +27,45 @@ export default function ExperienceSection() {
   const locale = useLocale();
 
   return (
-    <section id="experience" className="py-20 sm:py-32">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <SectionHeading title={t("title")} className="mb-12" />
+    <section id="experience" className="section">
+      <div className="container">
+        <SectionHeading title={t("title")} />
 
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="relative"
+          className={styles.timeline}
         >
-          {/* Timeline line */}
-          <div className="absolute left-[7px] top-2 bottom-2 w-px bg-brand-emerald/30 sm:left-[11px]" />
+          <div className={styles.rail} />
 
-          <div className="space-y-10">
+          <div className={styles.list}>
             {experiences.map((exp) => (
               <motion.div
                 key={`${exp.company}-${exp.period}`}
                 variants={itemVariants}
-                className="relative pl-8 sm:pl-10"
+                className={styles.item}
               >
-                {/* Timeline dot */}
-                <div className="absolute left-0 top-2.5 w-[15px] h-[15px] sm:w-[23px] sm:h-[23px] sm:left-0 flex items-center justify-center">
-                  <div className="w-3.5 h-3.5 rounded-full border-2 border-brand-orange bg-brand-black sm:w-[18px] sm:h-[18px]" />
+                <div className={styles.dotWrapper}>
+                  <div className={styles.dot} />
                 </div>
 
                 <Card>
-                  <div className="mb-3">
-                    <h3 className="text-lg font-semibold text-gray-100">
+                  <div className={styles.cardHeader}>
+                    <h3 className={styles.role}>
                       {locale === "en" ? exp.role.en : exp.role.ptBr}
                     </h3>
-                    <p className="text-brand-orange font-mono text-sm">
-                      {exp.company}
-                    </p>
+                    <p className={styles.company}>{exp.company}</p>
                   </div>
 
-                  <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                  <p className={styles.description}>
                     {locale === "en"
                       ? exp.description.en
                       : exp.description.ptBr}
                   </p>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className={styles.tags}>
                     {exp.technologies.map((tech) => (
                       <Badge key={tech} variant="gray">
                         {tech}

@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import ToolLayout from "@/components/layout/ToolLayout";
 import Button from "@/components/ui/Button";
 import CopyButton from "@/components/ui/CopyButton";
+import tools from "../tools.module.css";
+import styles from "./Base64.module.css";
 
 export default function Base64TranslatorClient() {
   const t = useTranslations("tools");
@@ -40,22 +42,18 @@ export default function Base64TranslatorClient() {
 
   return (
     <ToolLayout titleKey="base64.title" descriptionKey="base64.description">
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-start">
-        {/* Input */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-400">
-            {t("input")}
-          </label>
+      <div className={styles.grid}>
+        <div className={tools.field}>
+          <label className={tools.fieldLabel}>{t("input")}</label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t("base64.inputPlaceholder")}
-            className="w-full h-56 bg-brand-card border border-gray-800 rounded-lg p-4 font-mono text-sm text-gray-100 placeholder:text-gray-600 resize-none focus:outline-none focus:border-brand-orange/50 transition-colors"
+            className={`${tools.textarea} ${tools.textareaXl}`}
           />
         </div>
 
-        {/* Action buttons */}
-        <div className="flex md:flex-col items-center justify-center gap-2 py-2">
+        <div className={styles.actions}>
           <Button onClick={handleEncode} size="sm">
             {t("encode")} →
           </Button>
@@ -67,26 +65,23 @@ export default function Base64TranslatorClient() {
           </Button>
         </div>
 
-        {/* Output */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-400">
-              {t("output")}
-            </label>
+        <div className={tools.field}>
+          <div className={tools.labelRow}>
+            <label className={tools.fieldLabel}>{t("output")}</label>
             <CopyButton text={output} />
           </div>
           <textarea
             value={output}
             onChange={(e) => setOutput(e.target.value)}
             placeholder={t("base64.outputPlaceholder")}
-            className="w-full h-56 bg-brand-card border border-gray-800 rounded-lg p-4 font-mono text-sm text-gray-100 placeholder:text-gray-600 resize-none focus:outline-none focus:border-brand-orange/50 transition-colors"
+            className={`${tools.textarea} ${tools.textareaXl}`}
           />
         </div>
       </div>
 
       {error && (
-        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm font-mono">
-          {error}
+        <div className={styles.errorWrap}>
+          <div className={tools.errorBox}>{error}</div>
         </div>
       )}
     </ToolLayout>

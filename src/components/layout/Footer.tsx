@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { GithubLogo, LinkedinLogo, MediumLogo } from "@phosphor-icons/react";
 import { socialLinks } from "@/data/social";
+import styles from "./Footer.module.css";
 
 const iconMap = {
   GithubLogo,
@@ -14,13 +15,13 @@ export default function Footer() {
   const t = useTranslations("footer");
 
   return (
-    <footer className="border-t border-gray-800/50 bg-brand-black">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-sm text-gray-500">
+    <footer className={styles.footer}>
+      <div className={`container ${styles.inner}`}>
+        <p className={styles.copy}>
           &copy; {new Date().getFullYear()} Anderson Magalhaes. {t("rights")}
         </p>
 
-        <div className="flex items-center gap-4">
+        <div className={styles.socials}>
           {socialLinks.map((link) => {
             const Icon = iconMap[link.icon];
             return (
@@ -29,7 +30,7 @@ export default function Footer() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-500 hover:text-brand-orange transition-colors"
+                className={styles.socialLink}
                 aria-label={link.name}
               >
                 <Icon size={20} />
@@ -38,9 +39,7 @@ export default function Footer() {
           })}
         </div>
 
-        <p className="text-xs text-gray-600">
-          {t("built")}
-        </p>
+        <p className={styles.tagline}>{t("built")}</p>
       </div>
     </footer>
   );

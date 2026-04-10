@@ -1,0 +1,20 @@
+.bio {
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  max-width: 48rem;
+  margin-bottom: var(--space-10);
+  margin-top: var(--space-12);
+}
+
+@media (min-width: 640px) {
+  .bio {
+    font-size: var(--text-lg);
+  }
+}
+
+.highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

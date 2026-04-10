@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import styles from "./Card.module.css";
 
 interface CardProps {
   children: React.ReactNode;
@@ -8,13 +9,7 @@ interface CardProps {
 
 export default function Card({ children, className, hover = true }: CardProps) {
   return (
-    <div
-      className={cn(
-        "bg-brand-card border border-gray-800 rounded-lg p-6",
-        hover && "hover:border-brand-orange/50 transition-colors duration-300",
-        className
-      )}
-    >
+    <div className={cn(styles.card, hover && styles.hoverable, className)}>
       {children}
     </div>
   );

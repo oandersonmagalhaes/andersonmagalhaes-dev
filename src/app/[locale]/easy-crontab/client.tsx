@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import ToolLayout from "@/components/layout/ToolLayout";
 import Button from "@/components/ui/Button";
 import CopyButton from "@/components/ui/CopyButton";
+import tools from "../tools.module.css";
+import styles from "./Crontab.module.css";
 
 interface CronField {
   label: string;
@@ -224,52 +226,38 @@ export default function EasyCrontabClient() {
 
   return (
     <ToolLayout titleKey="cron.title" descriptionKey="cron.description">
-      <div className="space-y-6">
-        {/* Cron fields */}
-        <div className="grid grid-cols-5 gap-2 sm:gap-4">
+      <div className={tools.stack}>
+        <div className={styles.fieldsGrid}>
           {fields.map((field, i) => (
-            <div key={i} className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-gray-400 truncate">
-                {field.label}
-              </label>
+            <div key={i} className={styles.cronField}>
+              <label className={styles.cronFieldLabel}>{field.label}</label>
               <input
                 type="text"
                 value={field.value}
                 onChange={(e) => field.setter(e.target.value)}
                 placeholder={field.placeholder}
-                className="w-full bg-brand-card border border-gray-800 rounded-lg px-3 py-2.5 font-mono text-sm text-center text-gray-100 placeholder:text-gray-600 focus:outline-none focus:border-brand-orange/50 transition-colors"
+                className={styles.cronInput}
               />
-              <span className="text-[10px] text-gray-600 text-center font-mono">
-                {field.placeholder}
-              </span>
+              <span className={styles.cronHint}>{field.placeholder}</span>
             </div>
           ))}
         </div>
 
-        {/* Expression display */}
-        <div className="bg-brand-card border border-gray-800 rounded-lg p-5">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">
-              {t("cron.expression")}
-            </span>
+        <div className={styles.expressionPanel}>
+          <div className={styles.expressionRow}>
+            <span className={tools.eyebrow}>{t("cron.expression")}</span>
             <CopyButton text={expression} />
           </div>
-          <div className="font-mono text-2xl sm:text-3xl text-brand-orange font-bold tracking-wider">
-            {expression}
-          </div>
+          <div className={styles.expression}>{expression}</div>
         </div>
 
-        {/* Human-readable description */}
-        <div className="bg-brand-surface border border-gray-800/50 rounded-lg p-4">
-          <p className="text-sm text-gray-300">{description}</p>
+        <div className={styles.descriptionBox}>
+          <p className={styles.descriptionText}>{description}</p>
         </div>
 
-        {/* Presets */}
-        <div className="flex flex-col gap-2">
-          <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">
-            {t("cron.presets")}
-          </span>
-          <div className="flex flex-wrap gap-2">
+        <div className={styles.presetsSection}>
+          <span className={tools.eyebrow}>{t("cron.presets")}</span>
+          <div className={styles.presetsRow}>
             {PRESETS.map((preset) => (
               <Button
                 key={preset.label}
@@ -283,24 +271,14 @@ export default function EasyCrontabClient() {
           </div>
         </div>
 
-        {/* Next executions */}
         {nextRuns.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">
-              {t("cron.nextRuns")}
-            </span>
-            <div className="bg-brand-card border border-gray-800 rounded-lg divide-y divide-gray-800/50">
+          <div className={styles.runsSection}>
+            <span className={tools.eyebrow}>{t("cron.nextRuns")}</span>
+            <div className={styles.runsList}>
               {nextRuns.map((date, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm"
-                >
-                  <span className="text-gray-600 font-mono text-xs w-5">
-                    {i + 1}
-                  </span>
-                  <span className="font-mono text-gray-300">
-                    {formatRunDate(date)}
-                  </span>
+                <div key={i} className={styles.runRow}>
+                  <span className={styles.runIndex}>{i + 1}</span>
+                  <span className={styles.runDate}>{formatRunDate(date)}</span>
                 </div>
               ))}
             </div>

@@ -1,0 +1,18 @@
+<!--
+  next/font is not available inside Storybook (no Next.js runtime), so the
+  CSS variables --font-inter / --font-jetbrains stay undefined and the fallback
+  cascade lands on system-ui. Load the same families from Google Fonts here
+  so stories match production typography.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --font-inter: "Inter";
+    --font-jetbrains: "JetBrains Mono";
+  }
+</style>

@@ -25,7 +25,7 @@ const ResetSessionWrapper = ({ children }: { children: React.ReactNode }) => {
 export const Default: Story = {
   render: () => (
     <ResetSessionWrapper>
-      <div className="relative w-screen h-screen">
+      <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
         <LoadingScreen />
       </div>
     </ResetSessionWrapper>

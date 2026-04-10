@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import styles from "./SectionHeading.module.css";
 
 interface SectionHeadingProps {
   title: string;
@@ -16,10 +17,10 @@ export default function SectionHeading({ title, className }: SectionHeadingProps
       transition={{ duration: 0.5 }}
       className={className}
     >
-      <h2 className="text-3xl sm:text-4xl font-mono font-bold text-gray-100 mb-2">
-        <span className="text-brand-orange">#</span> {title}
+      <h2 className={styles.heading}>
+        <span className={styles.hash}>#</span> {title}
       </h2>
-      <div className="w-16 h-1 bg-brand-emerald rounded-full" />
+      <div className={styles.underline} />
     </motion.div>
   );
 }

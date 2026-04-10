@@ -3,6 +3,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { ArrowLeft } from "@phosphor-icons/react";
 import Link from "next/link";
+import styles from "./ToolLayout.module.css";
 
 interface ToolLayoutProps {
   titleKey: string;
@@ -19,21 +20,16 @@ export default function ToolLayout({
   const locale = useLocale();
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6">
-      <div className="max-w-4xl mx-auto">
-        <Link
-          href={`/${locale}/`}
-          className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-brand-orange transition-colors mb-8"
-        >
+    <div className={styles.shell}>
+      <div className="container-tool">
+        <Link href={`/${locale}/`} className={styles.backLink}>
           <ArrowLeft size={16} />
           {t("back")}
         </Link>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-mono font-bold text-gray-100 mb-2">
-            {t(titleKey)}
-          </h1>
-          <p className="text-gray-400">{t(descriptionKey)}</p>
+        <div className={styles.headingBlock}>
+          <h1 className={styles.title}>{t(titleKey)}</h1>
+          <p className={styles.description}>{t(descriptionKey)}</p>
         </div>
 
         {children}

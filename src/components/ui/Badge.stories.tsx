@@ -29,9 +29,17 @@ export const Emerald: Story = {
   args: { variant: "emerald" },
 };
 
+const wrapStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: "0.5rem",
+  maxWidth: "28rem",
+};
+
 export const AllVariants: Story = {
   render: () => (
-    <div className="flex flex-wrap items-center gap-2">
+    <div style={wrapStyle}>
       <Badge variant="orange">orange</Badge>
       <Badge variant="emerald">emerald</Badge>
       <Badge variant="gray">gray</Badge>
@@ -41,8 +49,8 @@ export const AllVariants: Story = {
 
 export const TechStack: Story = {
   render: () => (
-    <div className="flex flex-wrap items-center gap-2 max-w-md">
-      {["Next.js", "React", "TypeScript", "Tailwind", "Node.js", "PostgreSQL"].map(
+    <div style={wrapStyle}>
+      {["Next.js", "React", "TypeScript", "Vanilla CSS", "Node.js", "PostgreSQL"].map(
         (tech) => (
           <Badge key={tech} variant="gray">
             {tech}

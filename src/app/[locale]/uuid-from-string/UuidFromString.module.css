@@ -1,0 +1,79 @@
+.namespaceSelect {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .namespaceSelect {
+    width: 16rem;
+  }
+}
+
+.outputBox {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  min-height: 3.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.outputValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  color: var(--color-brand-emerald);
+  user-select: all;
+  word-break: break-all;
+}
+
+.outputEmpty {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
+}
+
+.refPanel {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.refLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text-dim);
+  font-weight: var(--weight-medium);
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.refList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.375rem;
+}
+
+@media (min-width: 640px) {
+  .refList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.refItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+}
+
+.refKey {
+  color: var(--color-text-muted);
+  font-weight: var(--weight-medium);
+  width: 2.5rem;
+}
+
+.refValue {
+  font-family: var(--font-mono);
+  color: var(--color-text-faint);
+}

@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import ToolLayout from "@/components/layout/ToolLayout";
 import Button from "@/components/ui/Button";
 import CopyButton from "@/components/ui/CopyButton";
+import tools from "../tools.module.css";
+import styles from "./Password.module.css";
 
 const CHARSETS = {
   uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -14,6 +16,7 @@ const CHARSETS = {
 };
 
 type CharsetKey = keyof typeof CHARSETS;
+type StrengthLevel = 1 | 2 | 3 | 4;
 
 function generatePassword(length: number, options: Record<CharsetKey, boolean>): string {
   let chars = "";
@@ -28,9 +31,8 @@ function generatePassword(length: number, options: Record<CharsetKey, boolean>):
 }
 
 function getStrength(password: string, options: Record<CharsetKey, boolean>): {
-  level: number;
+  level: StrengthLevel;
   label: string;
-  color: string;
 } {
   const len = password.length;
   const enabledSets = Object.values(options).filter(Boolean).length;
@@ -44,11 +46,18 @@ function getStrength(password: string, options: Record<CharsetKey, boolean>): {
   if (enabledSets >= 3) score++;
   if (enabledSets >= 4) score++;
 
-  if (score <= 2) return { level: 1, label: "weak", color: "bg-red-500" };
-  if (score <= 4) return { level: 2, label: "medium", color: "bg-yellow-500" };
-  if (score <= 5) return { level: 3, label: "strong", color: "bg-brand-emerald" };
-  return { level: 4, label: "veryStrong", color: "bg-brand-orange" };
+  if (score <= 2) return { level: 1, label: "weak" };
+  if (score <= 4) return { level: 2, label: "medium" };
+  if (score <= 5) return { level: 3, label: "strong" };
+  return { level: 4, label: "veryStrong" };
 }
+
+const strengthBarClass: Record<StrengthLevel, string> = {
+  1: styles.strengthBarWeak,
+  2: styles.strengthBarMedium,
+  3: styles.strengthBarStrong,
+  4: styles.strengthBarVeryStrong,
+};
 
 export default function PasswordGeneratorClient() {
   const t = useTranslations("tools");
@@ -82,53 +91,55 @@ export default function PasswordGeneratorClient() {
       titleKey="password.title"
       descriptionKey="password.description"
     >
-      {/* Password display */}
-      <div className="bg-brand-card border border-gray-800 rounded-lg p-6 mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-400">
-            {t("output")}
-          </span>
+      <div className={`${tools.panel} ${styles.displayPanel}`}>
+        <div className={tools.fieldRow}>
+          <span className={tools.fieldLabel}>{t("output")}</span>
           <CopyButton text={password} />
         </div>
-        <div className="bg-brand-surface rounded-lg p-4 mb-4 select-all">
-          <p className="font-mono text-lg md:text-xl text-gray-100 break-all text-center leading-relaxed">
+        <div className={styles.passwordBox}>
+          <p className={styles.password}>
             {password || (
-              <span className="text-gray-600">{t("password.noCharset")}</span>
+              <span className={styles.passwordPlaceholder}>
+                {t("password.noCharset")}
+              </span>
             )}
           </p>
         </div>
 
-        {/* Strength indicator */}
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-xs text-gray-500 shrink-0">
+        <div className={styles.strength}>
+          <span className={styles.strengthLabel}>
             {t(`password.${strength.label}`)}
           </span>
-          <div className="flex-1 flex gap-1">
+          <div className={styles.strengthBars}>
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className={`h-1.5 flex-1 rounded-full transition-colors ${
-                  i <= strength.level ? strength.color : "bg-gray-800"
+                className={`${styles.strengthBar} ${
+                  i <= strength.level
+                    ? strengthBarClass[strength.level]
+                    : ""
                 }`}
               />
             ))}
           </div>
         </div>
 
-        <Button onClick={generate} className="w-full" disabled={!hasAnyOption}>
+        <Button
+          onClick={generate}
+          className={tools.fullWidthBtn}
+          disabled={!hasAnyOption}
+        >
           {t("generate")}
         </Button>
       </div>
 
-      {/* Options */}
-      <div className="bg-brand-card border border-gray-800 rounded-lg p-6">
-        {/* Length slider */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <label className="text-sm font-medium text-gray-400">
+      <div className={tools.panel}>
+        <div className={styles.lengthBlock}>
+          <div className={styles.lengthRow}>
+            <label className={tools.fieldLabel}>
               {t("password.length")}
             </label>
-            <span className="font-mono text-sm text-brand-orange">{length}</span>
+            <span className={styles.lengthValue}>{length}</span>
           </div>
           <input
             type="range"
@@ -136,32 +147,28 @@ export default function PasswordGeneratorClient() {
             max={128}
             value={length}
             onChange={(e) => setLength(parseInt(e.target.value))}
-            className="w-full accent-brand-orange"
+            className={styles.lengthSlider}
           />
-          <div className="flex justify-between text-xs text-gray-600 mt-1">
+          <div className={styles.lengthBounds}>
             <span>8</span>
             <span>128</span>
           </div>
         </div>
 
-        {/* Checkboxes */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className={styles.optionsGrid}>
           {(Object.keys(CHARSETS) as CharsetKey[]).map((key) => (
-            <label
-              key={key}
-              className="flex items-center gap-3 p-3 rounded-lg bg-brand-surface border border-gray-800 hover:border-gray-700 transition-colors cursor-pointer"
-            >
+            <label key={key} className={styles.option}>
               <input
                 type="checkbox"
                 checked={options[key]}
                 onChange={() => toggleOption(key)}
-                className="w-4 h-4 accent-brand-orange rounded"
+                className={styles.optionCheckbox}
               />
               <div>
-                <span className="text-sm text-gray-200">
+                <span className={styles.optionLabel}>
                   {t(`password.${key}`)}
                 </span>
-                <span className="block text-xs text-gray-500 font-mono mt-0.5">
+                <span className={styles.optionHint}>
                   {CHARSETS[key].slice(0, 10)}...
                 </span>
               </div>

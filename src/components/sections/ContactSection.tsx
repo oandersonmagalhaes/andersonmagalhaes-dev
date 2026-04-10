@@ -9,6 +9,7 @@ import {
 } from "@phosphor-icons/react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Button from "@/components/ui/Button";
+import styles from "./ContactSection.module.css";
 
 const contactLinks = [
   {
@@ -32,27 +33,25 @@ export default function ContactSection() {
   const t = useTranslations("contact");
 
   return (
-    <section id="contact" className="py-20 sm:py-32">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <SectionHeading title={t("title")} className="mb-12" />
+    <section id="contact" className="section">
+      <div className="container">
+        <SectionHeading title={t("title")} />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="max-w-2xl"
+          className={styles.wrapper}
         >
-          <p className="text-gray-400 text-base sm:text-lg leading-relaxed mb-10">
-            {t("description")}
-          </p>
+          <p className={styles.description}>{t("description")}</p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-wrap gap-4"
+            className={styles.actions}
           >
             {contactLinks.map(({ name, url, Icon }) => (
               <a

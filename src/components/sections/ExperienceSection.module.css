@@ -1,0 +1,98 @@
+.timeline {
+  position: relative;
+  margin-top: var(--space-12);
+}
+
+.rail {
+  position: absolute;
+  left: 7px;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1px;
+  background-color: var(--color-emerald-30);
+}
+
+@media (min-width: 640px) {
+  .rail {
+    left: 11px;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.item {
+  position: relative;
+  padding-left: var(--space-8);
+}
+
+@media (min-width: 640px) {
+  .item {
+    padding-left: var(--space-10);
+  }
+}
+
+.dotWrapper {
+  position: absolute;
+  left: 0;
+  top: 0.625rem;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .dotWrapper {
+    width: 23px;
+    height: 23px;
+  }
+}
+
+.dot {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-brand-orange-light);
+  background-color: var(--color-bg);
+}
+
+@media (min-width: 640px) {
+  .dot {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.cardHeader {
+  margin-bottom: var(--space-3);
+}
+
+.role {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-strong);
+}
+
+.company {
+  color: var(--color-brand-orange-light);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.description {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-4);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}

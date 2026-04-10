@@ -6,6 +6,9 @@ import { diffLines, Change } from "diff";
 import ToolLayout from "@/components/layout/ToolLayout";
 import Button from "@/components/ui/Button";
 import CopyButton from "@/components/ui/CopyButton";
+import { cn } from "@/lib/cn";
+import tools from "../tools.module.css";
+import styles from "./TextCompare.module.css";
 
 type ViewMode = "unified" | "split";
 
@@ -106,15 +109,20 @@ export default function TextCompareClient() {
     return { left, right };
   }, [changes]);
 
+  const lineClass = (type: "added" | "removed" | "unchanged" | "empty") =>
+    cn(
+      styles.line,
+      type === "added" && styles.lineAdded,
+      type === "removed" && styles.lineRemoved,
+      type === "empty" && styles.lineEmpty
+    );
+
   return (
     <ToolLayout titleKey="textCompare.title" descriptionKey="textCompare.description">
-      <div className="space-y-6">
-        {/* Text inputs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-400">
-              {t("textCompare.textA")}
-            </label>
+      <div className={tools.stack}>
+        <div className={styles.inputsGrid}>
+          <div className={tools.field}>
+            <label className={tools.fieldLabel}>{t("textCompare.textA")}</label>
             <textarea
               value={textA}
               onChange={(e) => {
@@ -122,13 +130,11 @@ export default function TextCompareClient() {
                 setCompared(false);
               }}
               placeholder={t("textCompare.placeholderA")}
-              className="w-full h-48 bg-brand-card border border-gray-800 rounded-lg p-4 font-mono text-sm text-gray-100 placeholder:text-gray-600 resize-none focus:outline-none focus:border-brand-orange/50 transition-colors"
+              className={`${tools.textarea} ${tools.textareaLg}`}
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-400">
-              {t("textCompare.textB")}
-            </label>
+          <div className={tools.field}>
+            <label className={tools.fieldLabel}>{t("textCompare.textB")}</label>
             <textarea
               value={textB}
               onChange={(e) => {
@@ -136,42 +142,37 @@ export default function TextCompareClient() {
                 setCompared(false);
               }}
               placeholder={t("textCompare.placeholderB")}
-              className="w-full h-48 bg-brand-card border border-gray-800 rounded-lg p-4 font-mono text-sm text-gray-100 placeholder:text-gray-600 resize-none focus:outline-none focus:border-brand-orange/50 transition-colors"
+              className={`${tools.textarea} ${tools.textareaLg}`}
             />
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-3">
+        <div className={tools.actionRow}>
           <Button onClick={handleCompare}>{t("compare")}</Button>
           <Button onClick={handleClear} variant="ghost">
             {t("clear")}
           </Button>
         </div>
 
-        {/* Diff output */}
         {compared && changes.length > 0 && (
-          <div className="space-y-3">
-            {/* View toggle + copy */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1 bg-brand-surface rounded-lg p-1">
+          <div className={styles.diffSection}>
+            <div className={styles.diffHeader}>
+              <div className={styles.viewToggle}>
                 <button
                   onClick={() => setViewMode("unified")}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer ${
-                    viewMode === "unified"
-                      ? "bg-brand-card text-gray-100"
-                      : "text-gray-400 hover:text-gray-300"
-                  }`}
+                  className={cn(
+                    styles.viewBtn,
+                    viewMode === "unified" && styles.viewBtnActive
+                  )}
                 >
                   {t("textCompare.unified")}
                 </button>
                 <button
                   onClick={() => setViewMode("split")}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer ${
-                    viewMode === "split"
-                      ? "bg-brand-card text-gray-100"
-                      : "text-gray-400 hover:text-gray-300"
-                  }`}
+                  className={cn(
+                    styles.viewBtn,
+                    viewMode === "split" && styles.viewBtnActive
+                  )}
                 >
                   {t("textCompare.split")}
                 </button>
@@ -179,81 +180,48 @@ export default function TextCompareClient() {
               <CopyButton text={diffText} />
             </div>
 
-            {/* Unified view */}
             {viewMode === "unified" && (
-              <div className="bg-brand-card border border-gray-800 rounded-lg overflow-x-auto">
-                <div className="min-w-[500px]">
+              <div className={styles.unified}>
+                <div className={styles.unifiedInner}>
                   {unifiedLines.map((line, i) => (
-                    <div
-                      key={i}
-                      className={`flex text-sm font-mono ${
-                        line.type === "added"
-                          ? "bg-brand-emerald/10 text-brand-emerald"
+                    <div key={i} className={lineClass(line.type)}>
+                      <span className={styles.lineNum}>{line.oldNum ?? ""}</span>
+                      <span className={styles.lineNum}>{line.newNum ?? ""}</span>
+                      <span className={styles.linePrefix}>
+                        {line.type === "added"
+                          ? "+"
                           : line.type === "removed"
-                          ? "bg-red-500/10 text-red-400"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      <span className="w-12 shrink-0 text-right pr-2 py-0.5 text-gray-600 select-none border-r border-gray-800/50 text-xs leading-6">
-                        {line.oldNum ?? ""}
+                          ? "-"
+                          : " "}
                       </span>
-                      <span className="w-12 shrink-0 text-right pr-2 py-0.5 text-gray-600 select-none border-r border-gray-800/50 text-xs leading-6">
-                        {line.newNum ?? ""}
-                      </span>
-                      <span className="w-6 shrink-0 text-center py-0.5 select-none text-xs leading-6">
-                        {line.type === "added" ? "+" : line.type === "removed" ? "-" : " "}
-                      </span>
-                      <span className="py-0.5 pr-4 whitespace-pre leading-6">
-                        {line.content}
-                      </span>
+                      <span className={styles.lineContent}>{line.content}</span>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Split view */}
             {viewMode === "split" && (
-              <div className="grid grid-cols-2 gap-0.5">
-                {/* Left */}
-                <div className="bg-brand-card border border-gray-800 rounded-l-lg overflow-x-auto">
+              <div className={styles.splitGrid}>
+                <div className={`${styles.splitPane} ${styles.splitPaneLeft}`}>
                   {splitData.left.map((line, i) => (
-                    <div
-                      key={i}
-                      className={`flex text-sm font-mono ${
-                        line.type === "removed"
-                          ? "bg-red-500/10 text-red-400"
-                          : line.type === "empty"
-                          ? "bg-brand-surface/30 text-transparent"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      <span className="w-10 shrink-0 text-right pr-2 py-0.5 text-gray-600 select-none border-r border-gray-800/50 text-xs leading-6">
+                    <div key={i} className={lineClass(line.type)}>
+                      <span className={`${styles.lineNum} ${styles.lineNumNarrow}`}>
                         {line.num ?? ""}
                       </span>
-                      <span className="py-0.5 px-2 whitespace-pre leading-6 truncate">
+                      <span className={styles.lineContentSplit}>
                         {line.content || "\u00A0"}
                       </span>
                     </div>
                   ))}
                 </div>
-                {/* Right */}
-                <div className="bg-brand-card border border-gray-800 rounded-r-lg overflow-x-auto">
+                <div className={`${styles.splitPane} ${styles.splitPaneRight}`}>
                   {splitData.right.map((line, i) => (
-                    <div
-                      key={i}
-                      className={`flex text-sm font-mono ${
-                        line.type === "added"
-                          ? "bg-brand-emerald/10 text-brand-emerald"
-                          : line.type === "empty"
-                          ? "bg-brand-surface/30 text-transparent"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      <span className="w-10 shrink-0 text-right pr-2 py-0.5 text-gray-600 select-none border-r border-gray-800/50 text-xs leading-6">
+                    <div key={i} className={lineClass(line.type)}>
+                      <span className={`${styles.lineNum} ${styles.lineNumNarrow}`}>
                         {line.num ?? ""}
                       </span>
-                      <span className="py-0.5 px-2 whitespace-pre leading-6 truncate">
+                      <span className={styles.lineContentSplit}>
                         {line.content || "\u00A0"}
                       </span>
                     </div>
