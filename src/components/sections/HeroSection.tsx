@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import {
-  GithubLogo,
-  LinkedinLogo,
-  MediumLogo,
+  GithubLogoIcon,
+  LinkedinLogoIcon,
+  MediumLogoIcon,
   ArrowDown,
 } from "@phosphor-icons/react";
 import Button from "@/components/ui/Button";
@@ -15,17 +15,17 @@ const socialLinks = [
   {
     name: "GitHub",
     url: "https://github.com/oandersonmagalhaes",
-    Icon: GithubLogo,
+    Icon: GithubLogoIcon,
   },
   {
     name: "LinkedIn",
     url: "https://www.linkedin.com/in/andersonbmagalhaes/",
-    Icon: LinkedinLogo,
+    Icon: LinkedinLogoIcon,
   },
   {
     name: "Medium",
     url: "https://oandersonbm.medium.com/",
-    Icon: MediumLogo,
+    Icon: MediumLogoIcon,
   },
 ];
 
@@ -41,9 +41,9 @@ export default function HeroSection() {
       <div className={styles.bg}>
         <div className={`${styles.blob} ${styles.blobOrange}`} />
         <div className={`${styles.blob} ${styles.blobEmerald}`} />
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 6 }, (_, i) => `dot-${i}`).map((dotKey, i) => (
           <motion.div
-            key={i}
+            key={dotKey}
             className={styles.dot}
             style={{
               top: `${15 + i * 15}%`,

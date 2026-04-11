@@ -2,28 +2,21 @@
 
 import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { diffLines, Change } from "diff";
+import { diffLines } from "diff";
 import ToolLayout from "@/components/layout/ToolLayout";
 import Button from "@/components/ui/Button";
 import CopyButton from "@/components/ui/CopyButton";
 import { cn } from "@/lib/cn";
+import {
+  buildUnifiedLines,
+  buildSplitData,
+  formatDiffText,
+  unifiedLinePrefix,
+} from "@/lib/text-compare";
 import tools from "../tools.module.css";
 import styles from "./TextCompare.module.css";
 
 type ViewMode = "unified" | "split";
-
-function formatDiffText(changes: Change[]): string {
-  return changes
-    .map((change) => {
-      const prefix = change.added ? "+" : change.removed ? "-" : " ";
-      return change.value
-        .split("\n")
-        .filter((line, i, arr) => !(i === arr.length - 1 && line === ""))
-        .map((line) => `${prefix} ${line}`)
-        .join("\n");
-    })
-    .join("\n");
-}
 
 export default function TextCompareClient() {
   const t = useTranslations("tools");
@@ -50,64 +43,10 @@ export default function TextCompareClient() {
   }
 
   // Build line-numbered unified view
-  const unifiedLines = useMemo(() => {
-    let oldLine = 1;
-    let newLine = 1;
-    const lines: {
-      type: "added" | "removed" | "unchanged";
-      content: string;
-      oldNum: number | null;
-      newNum: number | null;
-    }[] = [];
-
-    for (const change of changes) {
-      const raw = change.value.split("\n");
-      // Remove trailing empty string from split
-      if (raw[raw.length - 1] === "") raw.pop();
-
-      for (const line of raw) {
-        if (change.added) {
-          lines.push({ type: "added", content: line, oldNum: null, newNum: newLine++ });
-        } else if (change.removed) {
-          lines.push({ type: "removed", content: line, oldNum: oldLine++, newNum: null });
-        } else {
-          lines.push({ type: "unchanged", content: line, oldNum: oldLine++, newNum: newLine++ });
-        }
-      }
-    }
-    return lines;
-  }, [changes]);
+  const unifiedLines = useMemo(() => buildUnifiedLines(changes), [changes]);
 
   // Build split view data
-  const splitData = useMemo(() => {
-    const left: { type: "removed" | "unchanged" | "empty"; content: string; num: number | null }[] = [];
-    const right: { type: "added" | "unchanged" | "empty"; content: string; num: number | null }[] = [];
-    let oldLine = 1;
-    let newLine = 1;
-
-    for (const change of changes) {
-      const raw = change.value.split("\n");
-      if (raw[raw.length - 1] === "") raw.pop();
-
-      if (change.added) {
-        for (const line of raw) {
-          left.push({ type: "empty", content: "", num: null });
-          right.push({ type: "added", content: line, num: newLine++ });
-        }
-      } else if (change.removed) {
-        for (const line of raw) {
-          left.push({ type: "removed", content: line, num: oldLine++ });
-          right.push({ type: "empty", content: "", num: null });
-        }
-      } else {
-        for (const line of raw) {
-          left.push({ type: "unchanged", content: line, num: oldLine++ });
-          right.push({ type: "unchanged", content: line, num: newLine++ });
-        }
-      }
-    }
-    return { left, right };
-  }, [changes]);
+  const splitData = useMemo(() => buildSplitData(changes), [changes]);
 
   const lineClass = (type: "added" | "removed" | "unchanged" | "empty") =>
     cn(
@@ -183,17 +122,11 @@ export default function TextCompareClient() {
             {viewMode === "unified" && (
               <div className={styles.unified}>
                 <div className={styles.unifiedInner}>
-                  {unifiedLines.map((line, i) => (
-                    <div key={i} className={lineClass(line.type)}>
+                  {unifiedLines.map((line) => (
+                    <div key={line.key} className={lineClass(line.type)}>
                       <span className={styles.lineNum}>{line.oldNum ?? ""}</span>
                       <span className={styles.lineNum}>{line.newNum ?? ""}</span>
-                      <span className={styles.linePrefix}>
-                        {line.type === "added"
-                          ? "+"
-                          : line.type === "removed"
-                          ? "-"
-                          : " "}
-                      </span>
+                      <span className={styles.linePrefix}>{unifiedLinePrefix(line.type)}</span>
                       <span className={styles.lineContent}>{line.content}</span>
                     </div>
                   ))}
@@ -204,8 +137,8 @@ export default function TextCompareClient() {
             {viewMode === "split" && (
               <div className={styles.splitGrid}>
                 <div className={`${styles.splitPane} ${styles.splitPaneLeft}`}>
-                  {splitData.left.map((line, i) => (
-                    <div key={i} className={lineClass(line.type)}>
+                  {splitData.left.map((line) => (
+                    <div key={line.key} className={lineClass(line.type)}>
                       <span className={`${styles.lineNum} ${styles.lineNumNarrow}`}>
                         {line.num ?? ""}
                       </span>
@@ -216,8 +149,8 @@ export default function TextCompareClient() {
                   ))}
                 </div>
                 <div className={`${styles.splitPane} ${styles.splitPaneRight}`}>
-                  {splitData.right.map((line, i) => (
-                    <div key={i} className={lineClass(line.type)}>
+                  {splitData.right.map((line) => (
+                    <div key={line.key} className={lineClass(line.type)}>
                       <span className={`${styles.lineNum} ${styles.lineNumNarrow}`}>
                         {line.num ?? ""}
                       </span>

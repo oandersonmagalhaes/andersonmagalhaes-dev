@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import ToolLayout from "@/components/layout/ToolLayout";
 import Button from "@/components/ui/Button";
 import CopyButton from "@/components/ui/CopyButton";
+import { encodeBase64, decodeBase64 } from "@/lib/base64";
 import tools from "../tools.module.css";
 import styles from "./Base64.module.css";
 
@@ -17,8 +18,7 @@ export default function Base64TranslatorClient() {
   function handleEncode() {
     setError("");
     try {
-      const encoded = btoa(unescape(encodeURIComponent(input)));
-      setOutput(encoded);
+      setOutput(encodeBase64(input));
     } catch {
       setError(t("base64.encodeError"));
     }
@@ -27,8 +27,7 @@ export default function Base64TranslatorClient() {
   function handleDecode() {
     setError("");
     try {
-      const decoded = decodeURIComponent(escape(atob(output)));
-      setInput(decoded);
+      setInput(decodeBase64(output));
     } catch {
       setError(t("base64.decodeError"));
     }

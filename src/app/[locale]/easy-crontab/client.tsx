@@ -64,8 +64,8 @@ export default function EasyCrontabClient() {
     <ToolLayout titleKey="cron.title" descriptionKey="cron.description">
       <div className={tools.stack}>
         <div className={styles.fieldsGrid}>
-          {fields.map((field, i) => (
-            <div key={i} className={styles.cronField}>
+          {fields.map((field) => (
+            <div key={field.label} className={styles.cronField}>
               <label className={styles.cronFieldLabel}>{field.label}</label>
               <input
                 type="text"
@@ -112,7 +112,7 @@ export default function EasyCrontabClient() {
             <span className={tools.eyebrow}>{t("cron.nextRuns")}</span>
             <div className={styles.runsList}>
               {nextRuns.map((date, i) => (
-                <div key={i} className={styles.runRow}>
+                <div key={formatRunDate(date)} className={styles.runRow}>
                   <span className={styles.runIndex}>{i + 1}</span>
                   <span className={styles.runDate}>{formatRunDate(date)}</span>
                 </div>

@@ -11,6 +11,87 @@ export type CronTranslator = (
   values?: Record<string, string | number>
 ) => string;
 
+// ---------------------------------------------------------------------------
+// Internal helpers — each handles one field of the cron expression so that
+// describeCron's cognitive complexity stays within SonarQube's threshold.
+// ---------------------------------------------------------------------------
+
+function describeDow(dow: string, t: CronTranslator): string | null {
+  if (dow === "*") return null;
+  const dayName = (i: number) => t(`cron.describe.days.${i === 7 ? 0 : i}`);
+  const idx = parseInt(dow);
+  if (!isNaN(idx) && idx >= 0 && idx <= 7) {
+    return t("cron.describe.everyDay", { day: dayName(idx) });
+  }
+  if (dow.includes(",")) {
+    const days = dow
+      .split(",")
+      .map((d) => {
+        const i = parseInt(d.trim());
+        return !isNaN(i) ? dayName(i) : d;
+      })
+      .join(", ");
+    return t("cron.describe.onDays", { days });
+  }
+  if (dow.includes("/")) {
+    return t("cron.describe.everyNDaysOfWeek", { n: dow.split("/")[1] });
+  }
+  return t("cron.describe.dayOfWeek", { value: dow });
+}
+
+function describeMonth(month: string, t: CronTranslator): string | null {
+  if (month === "*") return null;
+  const monthName = (i: number) => t(`cron.describe.months.${i}`);
+  const idx = parseInt(month);
+  if (!isNaN(idx) && idx >= 1 && idx <= 12) {
+    return t("cron.describe.inMonth", { month: monthName(idx) });
+  }
+  if (month.includes("/")) {
+    return t("cron.describe.everyNMonths", { n: month.split("/")[1] });
+  }
+  return t("cron.describe.monthValue", { value: month });
+}
+
+function describeDom(dom: string, t: CronTranslator): string | null {
+  if (dom === "*") return null;
+  if (dom.includes("/")) {
+    return t("cron.describe.everyNDays", { n: dom.split("/")[1] });
+  }
+  return t("cron.describe.onDay", { day: dom });
+}
+
+function describeTime(minute: string, hour: string, t: CronTranslator): string {
+  if (minute === "*" && hour === "*") {
+    return t("cron.describe.everyMinute");
+  }
+  if (minute === "*") {
+    return t("cron.describe.everyMinuteOfHour", { hour });
+  }
+  if (hour === "*") {
+    if (minute.includes("/")) {
+      return t("cron.describe.everyNMinutes", { n: minute.split("/")[1] });
+    }
+    return t("cron.describe.atMinuteOfEveryHour", { minute });
+  }
+  if (hour.includes("/")) {
+    return t("cron.describe.everyNHoursAtMinute", {
+      n: hour.split("/")[1],
+      minute,
+    });
+  }
+  const h = parseInt(hour);
+  const m = parseInt(minute);
+  const timeStr =
+    !isNaN(h) && !isNaN(m)
+      ? `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`
+      : `${hour}:${minute}`;
+  return t("cron.describe.atTime", { time: timeStr });
+}
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
 export function describeCron(
   minute: string,
   hour: string,
@@ -19,89 +100,18 @@ export function describeCron(
   dow: string,
   t: CronTranslator
 ): string {
-  const dayName = (i: number) => t(`cron.describe.days.${i === 7 ? 0 : i}`);
-  const monthName = (i: number) => t(`cron.describe.months.${i}`);
-
   const parts: string[] = [];
 
-  // Day of week
-  if (dow !== "*") {
-    const idx = parseInt(dow);
-    if (!isNaN(idx) && idx >= 0 && idx <= 7) {
-      parts.push(t("cron.describe.everyDay", { day: dayName(idx) }));
-    } else if (dow.includes(",")) {
-      const days = dow
-        .split(",")
-        .map((d) => {
-          const i = parseInt(d.trim());
-          return !isNaN(i) ? dayName(i) : d;
-        })
-        .join(", ");
-      parts.push(t("cron.describe.onDays", { days }));
-    } else if (dow.includes("/")) {
-      parts.push(
-        t("cron.describe.everyNDaysOfWeek", { n: dow.split("/")[1] })
-      );
-    } else {
-      parts.push(t("cron.describe.dayOfWeek", { value: dow }));
-    }
-  }
+  const dowPart = describeDow(dow, t);
+  if (dowPart) parts.push(dowPart);
 
-  // Month
-  if (month !== "*") {
-    const idx = parseInt(month);
-    if (!isNaN(idx) && idx >= 1 && idx <= 12) {
-      parts.push(t("cron.describe.inMonth", { month: monthName(idx) }));
-    } else if (month.includes("/")) {
-      parts.push(t("cron.describe.everyNMonths", { n: month.split("/")[1] }));
-    } else {
-      parts.push(t("cron.describe.monthValue", { value: month }));
-    }
-  }
+  const monthPart = describeMonth(month, t);
+  if (monthPart) parts.push(monthPart);
 
-  // Day of month
-  if (dom !== "*") {
-    if (dom.includes("/")) {
-      parts.push(t("cron.describe.everyNDays", { n: dom.split("/")[1] }));
-    } else {
-      parts.push(t("cron.describe.onDay", { day: dom }));
-    }
-  }
+  const domPart = describeDom(dom, t);
+  if (domPart) parts.push(domPart);
 
-  // Time
-  if (minute === "*" && hour === "*") {
-    parts.unshift(t("cron.describe.everyMinute"));
-  } else if (minute === "*" && hour !== "*") {
-    parts.unshift(t("cron.describe.everyMinuteOfHour", { hour }));
-  } else if (minute !== "*" && hour === "*") {
-    if (minute.includes("/")) {
-      parts.unshift(
-        t("cron.describe.everyNMinutes", { n: minute.split("/")[1] })
-      );
-    } else {
-      parts.unshift(t("cron.describe.atMinuteOfEveryHour", { minute }));
-    }
-  } else {
-    // Both set
-    if (hour.includes("/")) {
-      parts.unshift(
-        t("cron.describe.everyNHoursAtMinute", {
-          n: hour.split("/")[1],
-          minute,
-        })
-      );
-    } else {
-      const h = parseInt(hour);
-      const m = parseInt(minute);
-      const timeStr =
-        !isNaN(h) && !isNaN(m)
-          ? `${h.toString().padStart(2, "0")}:${m
-              .toString()
-              .padStart(2, "0")}`
-          : `${hour}:${minute}`;
-      parts.unshift(t("cron.describe.atTime", { time: timeStr }));
-    }
-  }
+  parts.unshift(describeTime(minute, hour, t));
 
   return parts.join(", ");
 }

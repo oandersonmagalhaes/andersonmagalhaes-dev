@@ -165,6 +165,43 @@ describe("describeCron()", () => {
       );
     });
   });
+
+  describe("when day-of-week is a step value", () => {
+    it("then describes 'every N days of week'", () => {
+      // Step makes parseInt() return NaN ('*/2' parses as NaN), then the
+      // dow.includes('/') branch fires with the everyNDaysOfWeek key.
+      expect(describeCron("0", "0", "*", "*", "*/2", t)).toBe(
+        "cron.describe.atTime(time=00:00), cron.describe.everyNDaysOfWeek(n=2)"
+      );
+    });
+  });
+
+  describe("when day-of-week is non-numeric without separators", () => {
+    it("then falls through to the dayOfWeek key carrying the raw value", () => {
+      // No comma, no slash, parseInt() yields NaN — last fallback in describeDow.
+      expect(describeCron("0", "0", "*", "*", "MON", t)).toBe(
+        "cron.describe.atTime(time=00:00), cron.describe.dayOfWeek(value=MON)"
+      );
+    });
+  });
+
+  describe("when month is non-numeric without separators", () => {
+    it("then falls through to the monthValue key carrying the raw value", () => {
+      // No slash, parseInt() yields NaN — last fallback in describeMonth.
+      expect(describeCron("0", "0", "1", "JAN", "*", t)).toBe(
+        "cron.describe.atTime(time=00:00), cron.describe.monthValue(value=JAN), cron.describe.onDay(day=1)"
+      );
+    });
+  });
+
+  describe("when minute and hour are both non-numeric", () => {
+    it("then falls back to the raw `hour:minute` time string", () => {
+      // Both values fail parseInt() so describeTime takes the unpadded fallback.
+      expect(describeCron("abc", "def", "*", "*", "*", t)).toBe(
+        "cron.describe.atTime(time=def:abc)"
+      );
+    });
+  });
 });
 
 describe("getNextExecutions()", () => {

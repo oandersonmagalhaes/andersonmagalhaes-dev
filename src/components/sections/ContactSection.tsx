@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import {
-  GithubLogo,
-  LinkedinLogo,
-  MediumLogo,
+  GithubLogoIcon,
+  LinkedinLogoIcon,
+  MediumLogoIcon,
 } from "@phosphor-icons/react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Button from "@/components/ui/Button";
@@ -15,17 +15,17 @@ const contactLinks = [
   {
     name: "GitHub",
     url: "https://github.com/oandersonmagalhaes",
-    Icon: GithubLogo,
+    Icon: GithubLogoIcon,
   },
   {
     name: "LinkedIn",
     url: "https://www.linkedin.com/in/andersonbmagalhaes/",
-    Icon: LinkedinLogo,
+    Icon: LinkedinLogoIcon,
   },
   {
     name: "Medium",
     url: "https://oandersonbm.medium.com/",
-    Icon: MediumLogo,
+    Icon: MediumLogoIcon,
   },
 ];
 

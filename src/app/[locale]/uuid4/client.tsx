@@ -68,8 +68,8 @@ export default function Uuid4Client() {
 
         {bulkUuids.length > 0 && (
           <div className={styles.bulkList}>
-            {bulkUuids.map((id, i) => (
-              <div key={i} className={styles.bulkItem}>
+            {bulkUuids.map((id) => (
+              <div key={id} className={styles.bulkItem}>
                 <span className={styles.bulkValue}>{id}</span>
                 <CopyButton text={id} className={styles.bulkItemCopy} />
               </div>

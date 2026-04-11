@@ -1,6 +1,7 @@
 # andersonmagalhaes.dev
 
-![Coverage](https://img.shields.io/badge/coverage-96%25-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
+![Security](https://github.com/oandersonmagalhaes/andersonmagalhaes-dev/actions/workflows/security.yml/badge.svg?branch=main)
 
 Personal site and developer toolkit for **Anderson Magalhaes** — Software Engineer with 15+ years of experience. Built as a static Next.js application, fully bilingual (EN / BR), and packed with browser-based developer tools.
 
@@ -140,6 +141,135 @@ make clean           # rm -rf .next out storybook-static coverage
 The plain `npm run …` scripts still work — `make` is just a thin convenience layer.
 
 The `postbuild` step copies `.htaccess` into `out/` so the bundle can be uploaded as-is to Hostinger `public_html`.
+
+---
+
+## Security pipeline
+
+Three security pillars run on every push to `main` and can be triggered on demand for any branch via the **Run workflow** button on the Actions tab. Any HIGH or higher severity finding fails the pipeline.
+
+| Pillar | Tool | Scope |
+|---|---|---|
+| **SAST** | Semgrep — `p/owasp-top-ten`, `p/javascript`, `p/typescript`, `p/react` | Source code patterns (XSS, injections, OWASP Top 10) |
+| **OWASP** | Trivy `fs` scan — `vuln,secret,misconfig` | npm dependencies, leaked secrets, IaC misconfig |
+| **DAST** | OWASP ZAP baseline | The built static export served on `localhost:3000` |
+
+The workflow lives at [`.github/workflows/security.yml`](.github/workflows/security.yml). Triggers:
+
+```yaml
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # manual run, branch picked from the UI dropdown
+```
+
+### Running the same scanners locally
+
+A separate compose file ships SonarQube and Trivy as the local equivalents.
+
+**One-shot SonarQube run:**
+
+```bash
+make sonar           # starts SonarQube, waits until healthy, generates coverage,
+                     # mints an analysis token via the Sonar API, runs the
+                     # scanner, and prints the dashboard URL
+```
+
+That single command handles everything: first-run admin-password reset, token creation, coverage generation, and the scan itself. The dashboard becomes available at <http://localhost:9000/dashboard?id=andersonmagalhaes-dev>.
+
+**Granular SonarQube targets:**
+
+```bash
+make sonar-up        # start SonarQube and wait for the healthcheck
+make sonar-logs      # tail SonarQube logs
+make sonar-token     # mint / rotate the analysis token (prints it to stdout)
+make sonar-scan      # run sonar-scanner — auto-bootstraps token + coverage
+make sonar-down      # stop the container (volumes preserved)
+```
+
+`make sonar-scan` honors `SONAR_TOKEN` if it's already exported, otherwise it creates one for you. Override `SONAR_PWD`, `SONAR_URL`, or `SONAR_PROJECT_KEY` on the command line if you need to talk to a different instance.
+
+**Trivy filesystem scan:**
+
+```bash
+make trivy-scan      # one-shot Trivy filesystem scan (HIGH/CRITICAL → exit 1)
+make security        # local security gate alias (currently runs trivy-scan)
+```
+
+The compose file is `docker-compose.security.yml`. Trivy is gated behind the `scan` profile so a plain `up` only starts SonarQube. Sonar settings live in [`sonar-project.properties`](sonar-project.properties) — the scanner reads `coverage/lcov.info` (emitted by `make coverage`) so the dashboard shows code coverage alongside Sonar's own findings.
+
+> SonarQube 9.9 LTS bundles a TypeScript version that doesn't recognize `moduleResolution: bundler` (which Next.js requires). [`tsconfig.sonar.json`](tsconfig.sonar.json) is a small override that swaps in `moduleResolution: node` so the TS sensor can build its program — `sonar-project.properties` points the scanner at it.
+
+### SonarQube dashboard walkthrough
+
+After `make sonar` finishes, point a browser at <http://localhost:9000> and log in with `admin` / `admin-local-1` (the password the Makefile sets on first run — override with `SONAR_PWD=...` if needed).
+
+**1. Login screen** — first thing you see at <http://localhost:9000>.
+
+![SonarQube login](docs/screenshots/sonar/sonar-01-login.png)
+
+**2. Projects list** — `andersonmagalhaes-dev` shows up after `make sonar` uploads its first analysis. The headline tiles already give you the bug/vulnerability/hotspot/coverage glance.
+
+![SonarQube projects list](docs/screenshots/sonar/sonar-02-projects.png)
+
+**3. Project overview** — open the project to see the full quality gate breakdown, the new-code vs. overall-code measures, and the activity graph. **Quality gate: Passed** — 0 bugs / 0 vulnerabilities / 100 % hotspots reviewed / 0 code smells / 93.2 % coverage on new code / 0 % duplications, every rating tile **A**.
+
+![SonarQube project overview](docs/screenshots/sonar/sonar-03-overview.png)
+
+**4. Issues tab** — `Project → Issues` (or directly at `/project/issues?id=andersonmagalhaes-dev&resolved=false`). Empty: **0 bugs, 0 vulnerabilities, 0 code smells**.
+
+![SonarQube issues — empty](docs/screenshots/sonar/sonar-04-issues.png)
+
+**5. Coverage on New Code** — `Project → Measures → Coverage on New Code` lists each file's contribution to the new-code coverage metric. The lib modules (`text-compare.ts`, `cron.ts`, `base64.ts`) are at 100 %; the remaining uncovered lines all live in the React `client.tsx` files (presentational JSX, no business logic).
+
+![SonarQube coverage on new code](docs/screenshots/sonar/sonar-05-coverage.png)
+
+**Quick checklist for verifying the project is healthy:**
+
+1. Run `make sonar` — wait for `✓ Dashboard:` line.
+2. Open <http://localhost:9000/dashboard?id=andersonmagalhaes-dev>.
+3. **Quality Gate** card → confirm it shows **Passed** and every rating tile is **A**.
+4. If the gate is ever red, click into **Coverage on New Code** — the file list will tell you exactly which files need more tests (see [Test architecture & coverage](#test-architecture--coverage) below).
+5. If everything looks good, `make sonar-down` to free up resources.
+
+#### Test architecture & coverage
+
+The unit-test suite uses **Vitest in node mode** (no jsdom) and targets `src/lib/**` exclusively. The pattern is consistent across every browser tool on the site: pure logic lives in a lib module with a co-located `When/Then` spec, and the `"use client"` React component imports from there.
+
+| Module | Lib file | Spec |
+|---|---|---|
+| Easy Crontab — describer + iterator | `src/lib/cron.ts` | `cron.test.ts` |
+| Password Generator | `src/lib/password.ts` | `password.test.ts` |
+| UUID v5 from string | `src/lib/uuid.ts` | `uuid.test.ts` |
+| JSON Validator | `src/lib/json-validate.ts` | `json-validate.test.ts` |
+| Text Compare — diff helpers | `src/lib/text-compare.ts` | `text-compare.test.ts` |
+| Base64 Translator — encode/decode | `src/lib/base64.ts` | `base64.test.ts` |
+| `cn()` class merger | `src/lib/cn.ts` | `cn.test.ts` |
+
+Current numbers (`make coverage`):
+
+```
+File              | % Stmts | % Branch | % Funcs | % Lines
+------------------|---------|----------|---------|---------
+All files         |    100  |   98.58  |    100  |    100
+ base64.ts        |    100  |    100   |    100  |    100
+ cn.ts            |    100  |    100   |    100  |    100
+ cron.ts          |    100  |   98.61  |    100  |    100
+ json-validate.ts |    100  |   83.33  |    100  |    100
+ password.ts      |    100  |    100   |    100  |    100
+ text-compare.ts  |    100  |    100   |    100  |    100
+ uuid.ts          |    100  |    100   |    100  |    100
+
+83 tests passing.
+```
+
+In Sonar, `new_coverage` lands at **93.2 %** — the only uncovered "new" lines are the JSX rendering paths inside the React client files (`text-compare/client.tsx`, `base64-translator/client.tsx`), which would require `@testing-library/react` + a jsdom environment to exercise. That's well above the Sonar Way 80 % threshold and the gate is **Passed**.
+
+If a future change touches one of the `client.tsx` files heavily and pushes new-code coverage back below 80 %, the playbook is:
+
+1. **Move the new logic into the corresponding `src/lib/*.ts` module** and add `When/Then` tests for it — this is what every browser tool already does and it's the cleanest path back to green.
+2. **Or bump `sonar.projectVersion`** in `sonar-project.properties` (e.g. `0.1.0` → `0.1.1`). Sonar rolls the "Previous Version" period forward and "new code" becomes empty until the next change — useful when you've consciously decided the current state is the new baseline.
+3. **Or customise the quality gate** in the Sonar UI (`Quality Gates` → clone the Sonar way → relax `Coverage on New Code`). Reasonable for a personal portfolio where presentational components don't carry meaningful logic.
 
 ## Styling architecture
 

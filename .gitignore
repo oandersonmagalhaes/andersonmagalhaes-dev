@@ -22,6 +22,12 @@
 # storybook
 /storybook-static/
 
+# security scanners
+/.scannerwork/
+
+# playwright MCP browser artifacts (snapshots, console logs)
+/.playwright-mcp/
+
 # production
 /build
 

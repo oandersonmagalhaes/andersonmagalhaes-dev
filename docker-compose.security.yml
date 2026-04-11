@@ -1,0 +1,62 @@
+# Local security stack — mirrors what GitHub Actions runs in CI.
+#
+# Usage (see Makefile for the friendly wrappers):
+#
+#   docker compose -f docker-compose.security.yml up -d sonarqube
+#       → starts SonarQube on http://localhost:9000 (admin / admin on first login)
+#
+#   docker compose -f docker-compose.security.yml run --rm trivy
+#       → one-shot Trivy filesystem scan that exits non-zero on HIGH or CRITICAL
+#         vulnerabilities — same gate as the CI workflow.
+#
+#   docker compose -f docker-compose.security.yml down
+#       → stops the SonarQube stack (volumes are preserved).
+#
+# Trivy is gated behind the `scan` profile so a plain `up` only starts SonarQube.
+
+services:
+  sonarqube:
+    image: sonarqube:lts-community
+    container_name: andersonmagalhaes-sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      # SonarQube needs higher mmap counts than most desktops ship with;
+      # disabling the bootstrap check keeps the container friendly to laptops.
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:9000/api/system/status | grep -q '\"status\":\"UP\"' || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+  trivy:
+    # `aquasec/trivy` does not publish a `latest` tag — pin a known good
+    # release. Bump intentionally so the local scan stays reproducible.
+    image: aquasec/trivy:0.69.3
+    container_name: andersonmagalhaes-trivy
+    profiles: ["scan"]
+    volumes:
+      - .:/repo:ro
+      - trivy_cache:/root/.cache/
+    command:
+      - fs
+      - --scanners
+      - vuln,secret,misconfig
+      - --severity
+      - HIGH,CRITICAL
+      - --ignore-unfixed
+      - --exit-code
+      - "1"
+      - /repo
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  trivy_cache:

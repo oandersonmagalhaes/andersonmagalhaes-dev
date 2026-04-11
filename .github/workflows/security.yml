@@ -1,0 +1,121 @@
+name: Security
+
+# Runs the three security pillars on every push to `main` and on demand
+# for any branch via the "Run workflow" button (workflow_dispatch).
+#
+#   SAST  → Semgrep with the OWASP Top 10 ruleset
+#   OWASP → Trivy filesystem scan (dependency / secret / misconfig CVEs)
+#   DAST  → OWASP ZAP baseline scan against the built static export
+#
+# Each job is configured to fail the build on HIGH or higher severity findings.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # SAST — Static analysis with Semgrep using OWASP Top 10 + JS/TS/React rules.
+  # ---------------------------------------------------------------------------
+  sast:
+    name: SAST (Semgrep — OWASP Top 10)
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        # `--error` makes Semgrep exit non-zero on any finding that matches
+        # `--severity=ERROR` (its mapping for HIGH severity).
+        run: |
+          semgrep scan \
+            --config p/owasp-top-ten \
+            --config p/javascript \
+            --config p/typescript \
+            --config p/react \
+            --error \
+            --severity=ERROR \
+            --metrics=off
+
+  # ---------------------------------------------------------------------------
+  # OWASP — Dependency / secret / misconfiguration scan with Trivy.
+  # Mirrors what `make trivy-scan` runs locally via docker-compose.
+  # ---------------------------------------------------------------------------
+  owasp:
+    name: OWASP (Trivy filesystem scan)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
+
+  # ---------------------------------------------------------------------------
+  # DAST — Build the static export, serve it, and run an OWASP ZAP baseline.
+  # `-I` keeps the run from failing on WARN-level alerts; only FAIL-level
+  # (HIGH risk) findings will block the pipeline.
+  # ---------------------------------------------------------------------------
+  dast:
+    name: DAST (OWASP ZAP baseline)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static export
+        run: npm run build
+
+      - name: Serve the static export
+        run: |
+          npx --yes serve out -l 3000 > server.log 2>&1 &
+          echo $! > server.pid
+          for i in {1..30}; do
+            if curl -sf http://localhost:3000/en/ > /dev/null; then
+              echo "Server is up."
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server failed to start. Logs:"
+          cat server.log
+          exit 1
+
+      - name: ZAP baseline scan
+        uses: zaproxy/action-baseline@v0.13.0
+        with:
+          target: 'http://localhost:3000/en/'
+          cmd_options: '-I'
+          fail_action: true
+          allow_issue_writing: false
+
+      - name: Stop server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then
+            kill "$(cat server.pid)" || true
+          fi
