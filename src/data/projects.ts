@@ -8,6 +8,16 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    name: "andersonmagalhaes.dev",
+    description: {
+      en: "Personal portfolio and developer tools site built with Next.js 15, static export, bilingual support (EN/PT-BR), and automated FTP deployment.",
+      ptBr: "Portfólio pessoal e ferramentas de desenvolvedor feito com Next.js 15, exportação estática, suporte bilíngue (EN/PT-BR) e deploy automatizado via FTP.",
+    },
+    technologies: ["Next.js", "TypeScript", "CSS Modules", "next-intl", "GitHub Actions"],
+    github: "https://github.com/oandersonmagalhaes/andersonmagalhaes-dev",
+    demo: "https://andersonmagalhaes.dev",
+  },
+  {
     name: "ABMock",
     description: {
       en: "Mock admin with dark theme, real-time editing via SSE, Monaco Editor, and a mock engine with Handlebars templates.",
