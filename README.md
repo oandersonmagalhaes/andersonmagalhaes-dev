@@ -35,7 +35,9 @@ The home page is a single-scroll experience composed of six animated sections, w
 ### Hero
 A full-viewport introduction with the name displayed in monospace orange, animated gradient blobs and floating dots in the background, social links, and dual CTAs that scroll to Projects or Contact.
 
-![Hero](docs/screenshots/01-hero.png)
+| Desktop | Mobile |
+|---|---|
+| ![Hero Desktop](docs/screenshots/01-hero.png) | ![Hero Mobile](docs/screenshots/01-hero-mobile.png) |
 
 ### About
 A short biography paired with emerald highlight badges summarizing the core specializations: Project Lead, Fullstack, Backend, Infra & Quality, SAST & DAST.
