@@ -6,26 +6,18 @@ export interface Skill {
 export const skillCategories = [
   {
     key: "languages",
-    skills: [
-      "Go",
-      "Python",
-      "TypeScript",
-      "JavaScript",
-      "Java",
-      "SQL",
-      "Bash",
-    ],
+    skills: ["Go", "Python", "TypeScript", "JavaScript", "C#", "SQL", "Bash"],
   },
   {
     key: "frameworks",
     skills: [
+      "Gin",
+      "FastAPI",
+      "Django",
       "React",
       "Next.js",
       "Node.js",
-      "FastAPI",
-      "Spring Boot",
-      "Gin",
-      "Django",
+      ".NET Core",
     ],
   },
   {
@@ -44,12 +36,18 @@ export const skillCategories = [
     key: "tools",
     skills: [
       "Git",
+      "Datadog",
+      "New Relic",
+      "Grafana",
       "PostgreSQL",
       "MongoDB",
       "Redis",
+      "MySQL",
       "RabbitMQ",
       "Kafka",
-      "Grafana",
+      "SNS",
+      "SQS",
+      "NATS",
     ],
   },
   {

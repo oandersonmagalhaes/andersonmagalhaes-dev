@@ -8,6 +8,15 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    name: "ABMock",
+    description: {
+      en: "Mock admin with dark theme, real-time editing via SSE, Monaco Editor, and a mock engine with Handlebars templates.",
+      ptBr: "Admin de mocks com tema escuro, edição em tempo real via SSE, Monaco Editor e engine de mocks com templates Handlebars.",
+    },
+    technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "SSE"],
+    github: "https://github.com/oandersonmagalhaes/ab-mock",
+  },
+  {
     name: "Golang POC Observability",
     description: {
       en: "Proof of concept implementing observability patterns in Go with structured logging, metrics, and distributed tracing.",

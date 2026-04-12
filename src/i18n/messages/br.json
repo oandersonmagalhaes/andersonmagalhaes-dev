@@ -18,10 +18,10 @@
   },
   "about": {
     "title": "Sobre Mim",
-    "bio": "Sou um Engenheiro de Software com mais de 15 anos de experiência construindo soluções escaláveis em todo o stack. Minha trajetória abrange desde sistemas backend até interfaces frontend, com forte foco em qualidade de código, segurança e infraestrutura."
+    "bio": "Sou um desenvolvedor de Software com mais de 15 anos de experiência construindo soluções escaláveis em todo o stack. Minha trajetória abrange desde sistemas backend até interfaces frontend, com forte foco em qualidade de código, segurança e infraestrutura."
   },
   "experience": {
-    "title": "Experiência",
+    "title": "Principais Experiências",
     "current": "Atual",
     "present": "Atual"
   },
