@@ -31,6 +31,21 @@ export const metadata: Metadata = {
     siteName: "Anderson Magalhaes",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/photo.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Anderson Magalhaes - Software Engineer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Anderson Magalhaes - Software Engineer",
+    description:
+      "Software Engineer with 15+ years of experience. Portfolio, projects, and developer tools.",
+    images: ["/photo.jpg"],
   },
 };
 

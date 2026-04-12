@@ -86,7 +86,7 @@ export default function HeroSection() {
           className={styles.photoWrap}
         >
           <Image
-            src="/photo.png"
+            src="/photo.jpg"
             alt="Anderson Magalhaes"
             width={192}
             height={192}
