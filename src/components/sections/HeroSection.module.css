@@ -47,6 +47,42 @@
   text-align: center;
 }
 
+.photoWrap {
+  width: 8rem;
+  height: 8rem;
+  margin: 0 auto var(--space-6);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 2px solid var(--color-brand-orange-light);
+  box-shadow:
+    0 0 0 4px rgba(10, 10, 10, 0.8),
+    0 0 48px rgba(249, 115, 22, 0.25);
+  /* Make sure framer-motion's `scale` transforms from the photo center. */
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+@media (min-width: 640px) {
+  .photoWrap {
+    width: 10rem;
+    height: 10rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .photoWrap {
+    width: 12rem;
+    height: 12rem;
+  }
+}
+
+.photoImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .greeting {
   color: var(--color-brand-emerald);
   font-family: var(--font-mono);

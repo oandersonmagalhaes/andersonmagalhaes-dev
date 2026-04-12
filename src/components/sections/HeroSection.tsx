@@ -1,6 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useTranslations } from "next-intl";
 import {
   GithubLogoIcon,
@@ -31,13 +33,25 @@ const socialLinks = [
 
 export default function HeroSection() {
   const t = useTranslations("hero");
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Fade and shrink the portrait as the section scrolls out of view.
+  // `start start` = top of section aligned with top of viewport,
+  // `end start`   = bottom of section crosses top of viewport.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const photoOpacity = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
+  const photoScale = useTransform(scrollYProgress, [0, 0.55], [1, 0.85]);
+  const photoY = useTransform(scrollYProgress, [0, 0.55], [0, -24]);
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section id="hero" className={styles.section}>
+    <section ref={sectionRef} id="hero" className={styles.section}>
       <div className={styles.bg}>
         <div className={`${styles.blob} ${styles.blobOrange}`} />
         <div className={`${styles.blob} ${styles.blobEmerald}`} />
@@ -65,9 +79,26 @@ export default function HeroSection() {
 
       <div className={`container ${styles.content}`}>
         <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          style={{ opacity: photoOpacity, scale: photoScale, y: photoY }}
+          className={styles.photoWrap}
+        >
+          <Image
+            src="/photo.png"
+            alt="Anderson Magalhaes"
+            width={192}
+            height={192}
+            priority
+            className={styles.photoImage}
+          />
+        </motion.div>
+
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
         >
           <p className={styles.greeting}>{t("greeting")}</p>
         </motion.div>
