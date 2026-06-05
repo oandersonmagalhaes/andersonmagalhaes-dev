@@ -10,6 +10,12 @@ on:
   push:
     tags:
       - "*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to deploy (e.g. v0.1.1). Must be an existing tag."
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -20,8 +26,32 @@ jobs:
     runs-on: ubuntu-latest
     environment: prd
     steps:
+      - name: Validate tag (manual runs)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TAG: ${{ github.event.inputs.tag }}
+        run: |
+          set -uo pipefail
+          echo "Requested tag: $TAG"
+          tags=$(git ls-remote --tags --refs "https://github.com/${{ github.repository }}.git" \
+                 | sed 's#.*refs/tags/##')
+          if echo "$tags" | grep -qx "$TAG"; then
+            echo "✅ Tag '$TAG' exists — proceeding."
+          else
+            echo "::error::Tag '$TAG' not found. Pick one of the available tags below:"
+            echo "$tags" | sort -V | sed 's/^/  - /'
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # On manual runs, deploy the tag chosen in the input; on tag push,
+          # use the pushed tag ref.
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Show deploy target
+        run: echo "Deploying ref → ${{ github.event.inputs.tag || github.ref_name }}"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
