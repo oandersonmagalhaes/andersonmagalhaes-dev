@@ -34,7 +34,7 @@ export const experiences: Experience[] = [
       en: "Developed and maintained full-stack applications, implemented CI/CD pipelines, and contributed to infrastructure automation and monitoring solutions. Actively participated in the re-engineering of billing, payment, and customer pricing systems, creating a viable ecosystem for companies entering or being acquired by the group.",
       ptBr: "Desenvolveu e manteve aplicacoes full-stack, implementou pipelines CI/CD e contribuiu para automacao de infraestrutura e solucoes de monitoramento. Participei ativamente de uma re-engenharia da parte faturamento, cobrança e precificação de clientes, criando um ecossistema viável para empresas que estavam entrando para o grupo/sendo adquiridas.",
     },
-    technologies: ["Java", "React", "Docker", "PostgreSQL", "Jenkins"],
+    technologies: ["Python", "C#", "NodeJS", "Docker", "PostgreSQL"],
   },
   {
     company: "Gestão DS",
@@ -48,7 +48,7 @@ export const experiences: Experience[] = [
       en: "Built solutions for small and medium medical clinics, developed backend services and APIs, worked with relational databases, and participated in agile development processes. Grew from junior to senior engineer.",
       ptBr: "Criei soluções para pequenos e médios consultórios médicos, construiu servicos backend e APIs, trabalhou com bancos de dados relacionais e participou de processos ageis de desenvolvimento. Cresceu de junior a engenheiro senior.",
     },
-    technologies: ["Java", "Python", "MySQL", "REST APIs", "Git"],
+    technologies: ["Python", "MySQL", "REST APIs", "Git"],
   },
   {
     company: "CNSA",

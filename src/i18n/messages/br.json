@@ -176,6 +176,20 @@
       "textB": "Texto B",
       "placeholderA": "Digite o primeiro texto...",
       "placeholderB": "Digite o segundo texto..."
+    },
+    "bgRemover": {
+      "title": "Removedor de Fundo",
+      "description": "Remova uma cor de fundo sólida de uma imagem e exporte um PNG transparente. Roda inteiramente no seu navegador — nada é enviado.",
+      "upload": "Enviar imagem",
+      "changeImage": "Trocar imagem",
+      "pickColorHint": "Clique no fundo da imagem para escolher a cor a remover.",
+      "selectedColor": "Cor selecionada",
+      "noColor": "Nenhuma cor selecionada ainda",
+      "tolerance": "Tolerância",
+      "softness": "Suavização",
+      "despill": "Remover franja de cor",
+      "download": "Baixar PNG",
+      "reset": "Limpar"
     }
   },
   "footer": {

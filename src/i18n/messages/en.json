@@ -176,6 +176,20 @@
       "textB": "Text B",
       "placeholderA": "Enter first text...",
       "placeholderB": "Enter second text..."
+    },
+    "bgRemover": {
+      "title": "Background Remover",
+      "description": "Remove a solid background color from an image and export a transparent PNG. Runs entirely in your browser — nothing is uploaded.",
+      "upload": "Upload image",
+      "changeImage": "Change image",
+      "pickColorHint": "Click the background in the image to pick the color to remove.",
+      "selectedColor": "Selected color",
+      "noColor": "No color selected yet",
+      "tolerance": "Tolerance",
+      "softness": "Softness",
+      "despill": "Remove color fringe",
+      "download": "Download PNG",
+      "reset": "Reset"
     }
   },
   "footer": {
