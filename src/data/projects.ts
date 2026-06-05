@@ -116,4 +116,13 @@ export const projects: Project[] = [
     technologies: ["TypeScript", "diff"],
     demo: "/text-compare",
   },
+  {
+    name: "Background Remover",
+    description: {
+      en: "Remove a solid background color from an image and export a transparent PNG. Pure client-side chroma keying with feather and despill — no uploads.",
+      ptBr: "Remova uma cor de fundo sólida de uma imagem e exporte um PNG transparente. Chroma key 100% client-side com suavização e remoção de franja — sem uploads.",
+    },
+    technologies: ["TypeScript", "Canvas API"],
+    demo: "/background-remover",
+  },
 ];

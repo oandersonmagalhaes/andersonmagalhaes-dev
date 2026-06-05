@@ -20,6 +20,7 @@ const toolRoutes = [
   { key: "jwt", href: "/jwt-validator" },
   { key: "json", href: "/json-validator" },
   { key: "textCompare", href: "/text-compare" },
+  { key: "bgRemover", href: "/background-remover" },
 ] as const;
 
 export default function Header() {
