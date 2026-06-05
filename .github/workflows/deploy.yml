@@ -9,7 +9,7 @@ name: Deploy
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 permissions:
   contents: read
@@ -26,7 +26,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
           cache: npm
 
       - name: Install dependencies
@@ -35,13 +35,45 @@ jobs:
       - name: Build static export
         run: npm run build
 
+      - name: Verify FTP connection & credentials
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          set -uo pipefail
+          # Ensure secrets are actually set (fail fast, no waiting)
+          : "${FTP_SERVER:?FTP_SERVER secret is empty}"
+          : "${FTP_USERNAME:?FTP_USERNAME secret is empty}"
+          : "${FTP_PASSWORD:?FTP_PASSWORD secret is empty}"
+          echo "🔎 Target: $FTP_SERVER (FTPS, port 21)"
+
+          echo "── 1/2 TCP reachability (10s budget) ──"
+          if timeout 10 bash -c "exec 3<>/dev/tcp/$FTP_SERVER/21"; then
+            echo "✅ Control port 21 reachable"
+          else
+            echo "::error::Cannot reach $FTP_SERVER:21 within 10s — control socket blocked. Hostinger commonly blocks FTP/FTPS from GitHub runner (cloud) IPs. Consider SFTP on port 65002."
+            exit 1
+          fi
+
+          echo "── 2/2 FTPS login (verify user/password) ──"
+          # -v prints the FTP dialogue; server responses (e.g. 230/530) are NOT masked,
+          # so we can confirm whether the user authenticated. Short timeouts = fast fail.
+          if curl -v --ssl-reqd --connect-timeout 10 --max-time 25 \
+                  --user "$FTP_USERNAME:$FTP_PASSWORD" \
+                  --list-only "ftp://$FTP_SERVER/"; then
+            echo "✅ FTPS login succeeded for the configured user"
+          else
+            echo "::error::FTPS login/list failed — check FTP_USERNAME / FTP_PASSWORD (look for '530 Login incorrect' above)."
+            exit 1
+          fi
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
           port: 21
           timeout: 60000
           local-dir: ./out/
