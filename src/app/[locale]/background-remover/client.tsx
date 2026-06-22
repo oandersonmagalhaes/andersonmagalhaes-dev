@@ -4,76 +4,71 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import ToolLayout from "@/components/layout/ToolLayout";
 import Button from "@/components/ui/Button";
-import { applyChromaKey, pixelColorAt, type RGB } from "@/lib/chromaKey";
+import {
+  removeImageBackground,
+  type ProgressStage,
+} from "@/lib/removeBackground";
 import tools from "../tools.module.css";
 import styles from "./BackgroundRemover.module.css";
 
-function toHex({ r, g, b }: RGB): string {
-  const h = (n: number) => n.toString(16).padStart(2, "0");
-  return `#${h(r)}${h(g)}${h(b)}`;
-}
+type Status = "idle" | "processing" | "done" | "error";
 
 export default function BackgroundRemoverClient() {
   const t = useTranslations("tools");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const displayCanvasRef = useRef<HTMLCanvasElement>(null);
-  // Pristine pixels of the loaded image; every preview re-derives from this.
-  const originalRef = useRef<ImageData | null>(null);
 
-  const [hasImage, setHasImage] = useState(false);
+  const [originalUrl, setOriginalUrl] = useState<string | null>(null);
+  const [cutoutUrl, setCutoutUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState("image");
-  const [keyColor, setKeyColor] = useState<RGB | null>(null);
-  const [tolerance, setTolerance] = useState(20);
-  const [softness, setSoftness] = useState(10);
-  const [despill, setDespill] = useState(true);
+  const [status, setStatus] = useState<Status>("idle");
+  const [progress, setProgress] = useState(0);
+  const [stage, setStage] = useState<ProgressStage | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // Render the preview from the pristine pixels, applying chroma key if a
-  // color has been picked.
-  const renderPreview = useCallback(() => {
-    const original = originalRef.current;
-    const canvas = displayCanvasRef.current;
-    if (!original || !canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  // Track object URLs so we can revoke them on replace/unmount.
+  const urlsRef = useRef<string[]>([]);
+  const trackUrl = (url: string) => {
+    urlsRef.current.push(url);
+    return url;
+  };
+  const revokeAll = () => {
+    urlsRef.current.forEach((u) => URL.revokeObjectURL(u));
+    urlsRef.current = [];
+  };
+  useEffect(() => revokeAll, []);
 
-    const copy = new ImageData(
-      new Uint8ClampedArray(original.data),
-      original.width,
-      original.height,
-    );
-    if (keyColor) {
-      applyChromaKey(copy.data, { keyColor, tolerance, softness, despill });
-    }
-    ctx.putImageData(copy, 0, 0);
-  }, [keyColor, tolerance, softness, despill]);
-
-  useEffect(() => {
-    renderPreview();
-  }, [renderPreview]);
-
-  function handleFile(file: File) {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      const canvas = displayCanvasRef.current;
-      if (!canvas) return;
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-      ctx.drawImage(img, 0, 0);
-      originalRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      URL.revokeObjectURL(url);
+  const handleFile = useCallback(
+    async (file: File) => {
+      if (!file.type.startsWith("image/")) {
+        setError(t("bgRemover.errorInvalidFile"));
+        setStatus("error");
+        return;
+      }
+      revokeAll();
+      setError(null);
+      setCutoutUrl(null);
       setFileName(file.name.replace(/\.[^.]+$/, "") || "image");
-      setKeyColor(null);
-      setHasImage(true);
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-    };
-    img.src = url;
-  }
+      setOriginalUrl(trackUrl(URL.createObjectURL(file)));
+      setStatus("processing");
+      setProgress(0);
+      setStage("loadingModel");
+
+      try {
+        const blob = await removeImageBackground(file, (ratio, s) => {
+          setProgress(Math.round(ratio * 100));
+          setStage(s);
+        });
+        setCutoutUrl(trackUrl(URL.createObjectURL(blob)));
+        setStatus("done");
+      } catch (err) {
+        console.error("Background removal failed:", err);
+        setError(t("bgRemover.errorGeneric"));
+        setStatus("error");
+      }
+    },
+    [t],
+  );
 
   function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -81,46 +76,26 @@ export default function BackgroundRemoverClient() {
     e.target.value = "";
   }
 
-  // Eyedropper: map a click on the (CSS-scaled) canvas back to bitmap pixels.
-  function onCanvasClick(e: React.MouseEvent<HTMLCanvasElement>) {
-    const original = originalRef.current;
-    const canvas = displayCanvasRef.current;
-    if (!original || !canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = Math.min(
-      canvas.width - 1,
-      Math.max(0, Math.floor(((e.clientX - rect.left) / rect.width) * canvas.width)),
-    );
-    const y = Math.min(
-      canvas.height - 1,
-      Math.max(0, Math.floor(((e.clientY - rect.top) / rect.height) * canvas.height)),
-    );
-    const index = y * canvas.width + x;
-    setKeyColor(pixelColorAt(original.data, index));
-  }
-
   function download() {
-    const canvas = displayCanvasRef.current;
-    if (!canvas) return;
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${fileName}-no-bg.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }, "image/png");
+    if (!cutoutUrl) return;
+    const a = document.createElement("a");
+    a.href = cutoutUrl;
+    a.download = `${fileName}-no-bg.png`;
+    a.click();
   }
 
   function reset() {
-    originalRef.current = null;
-    setHasImage(false);
-    setKeyColor(null);
-    setTolerance(20);
-    setSoftness(10);
-    setDespill(true);
+    revokeAll();
+    setOriginalUrl(null);
+    setCutoutUrl(null);
+    setStatus("idle");
+    setProgress(0);
+    setStage(null);
+    setError(null);
   }
+
+  const hasImage = status !== "idle";
+  const previewUrl = cutoutUrl ?? originalUrl;
 
   return (
     <ToolLayout titleKey="bgRemover.title" descriptionKey="bgRemover.description">
@@ -134,106 +109,59 @@ export default function BackgroundRemoverClient() {
         />
 
         {!hasImage && (
-          <button
-            type="button"
-            className={styles.uploadArea}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {t("bgRemover.upload")}
-          </button>
+          <>
+            <button
+              type="button"
+              className={styles.uploadArea}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {t("bgRemover.upload")}
+            </button>
+            <p className={styles.hint}>{t("bgRemover.dropHint")}</p>
+          </>
         )}
 
-        <div
-          className={styles.canvasWrap}
-          style={{ display: hasImage ? "flex" : "none" }}
-        >
-          <canvas
-            ref={displayCanvasRef}
-            className={styles.canvas}
-            onClick={onCanvasClick}
-          />
-        </div>
+        {hasImage && previewUrl && (
+          <div className={styles.canvasWrap}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={previewUrl} alt="" className={styles.image} />
+          </div>
+        )}
+
+        {status === "processing" && (
+          <div className={styles.progressBlock}>
+            <div className={styles.progressLabel}>
+              <span>{stage ? t(`bgRemover.${stage}`) : ""}</span>
+              <span>{progress}%</span>
+            </div>
+            <div className={styles.progressTrack}>
+              <div
+                className={styles.progressFill}
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {status === "error" && error && (
+          <div className={tools.errorBox}>{error}</div>
+        )}
 
         {hasImage && (
-          <>
-            <p className={styles.hint}>{t("bgRemover.pickColorHint")}</p>
-
-            <div className={tools.panel}>
-              <div className={styles.swatchRow}>
-                <span className={tools.fieldLabel}>
-                  {t("bgRemover.selectedColor")}
-                </span>
-                {keyColor ? (
-                  <span className={styles.swatchValue}>
-                    <span
-                      className={styles.swatch}
-                      style={{ backgroundColor: toHex(keyColor) }}
-                    />
-                    {toHex(keyColor)}
-                  </span>
-                ) : (
-                  <span className={styles.swatchValue}>
-                    {t("bgRemover.noColor")}
-                  </span>
-                )}
-              </div>
-
-              <div className={styles.sliderBlock}>
-                <div className={tools.labelRow}>
-                  <label className={tools.fieldLabel}>
-                    {t("bgRemover.tolerance")}
-                  </label>
-                  <span className={styles.sliderValue}>{tolerance}</span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={tolerance}
-                  onChange={(e) => setTolerance(parseInt(e.target.value))}
-                  className={styles.slider}
-                />
-              </div>
-
-              <div className={styles.sliderBlock}>
-                <div className={tools.labelRow}>
-                  <label className={tools.fieldLabel}>
-                    {t("bgRemover.softness")}
-                  </label>
-                  <span className={styles.sliderValue}>{softness}</span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={softness}
-                  onChange={(e) => setSoftness(parseInt(e.target.value))}
-                  className={styles.slider}
-                />
-              </div>
-
-              <label className={styles.toggle}>
-                <input
-                  type="checkbox"
-                  checked={despill}
-                  onChange={(e) => setDespill(e.target.checked)}
-                />
-                {t("bgRemover.despill")}
-              </label>
-            </div>
-
-            <div className={tools.actionRow}>
-              <Button onClick={download} disabled={!keyColor}>
-                {t("bgRemover.download")}
-              </Button>
-              <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
-                {t("bgRemover.changeImage")}
-              </Button>
-              <Button variant="ghost" onClick={reset}>
-                {t("bgRemover.reset")}
-              </Button>
-            </div>
-          </>
+          <div className={tools.actionRow}>
+            <Button onClick={download} disabled={status !== "done"}>
+              {t("bgRemover.download")}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {t("bgRemover.changeImage")}
+            </Button>
+            <Button variant="ghost" onClick={reset}>
+              {t("bgRemover.reset")}
+            </Button>
+          </div>
         )}
       </div>
     </ToolLayout>

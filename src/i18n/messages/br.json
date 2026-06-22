@@ -179,15 +179,14 @@
     },
     "bgRemover": {
       "title": "Removedor de Fundo",
-      "description": "Remova uma cor de fundo sólida de uma imagem e exporte um PNG transparente. Roda inteiramente no seu navegador — nada é enviado.",
+      "description": "Remova o fundo de qualquer imagem com IA e exporte um PNG transparente. Roda inteiramente no seu navegador — nada é enviado.",
       "upload": "Enviar imagem",
+      "dropHint": "PNG, JPG ou WEBP. Processado localmente com um modelo de IA.",
       "changeImage": "Trocar imagem",
-      "pickColorHint": "Clique no fundo da imagem para escolher a cor a remover.",
-      "selectedColor": "Cor selecionada",
-      "noColor": "Nenhuma cor selecionada ainda",
-      "tolerance": "Tolerância",
-      "softness": "Suavização",
-      "despill": "Remover franja de cor",
+      "loadingModel": "Carregando modelo de IA…",
+      "removingBg": "Removendo o fundo…",
+      "errorInvalidFile": "Envie um arquivo de imagem válido (PNG, JPG, WEBP).",
+      "errorGeneric": "Não foi possível processar a imagem. Tente novamente com outra foto.",
       "download": "Baixar PNG",
       "reset": "Limpar"
     }

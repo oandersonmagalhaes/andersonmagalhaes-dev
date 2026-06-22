@@ -6,7 +6,7 @@ import BackgroundRemoverClient from "./client";
 export const metadata: Metadata = {
   title: "Background Remover",
   description:
-    "Remove a solid background color from an image and export a transparent PNG, entirely in your browser.",
+    "Remove the background from any image with AI and export a transparent PNG, entirely in your browser.",
 };
 
 export function generateStaticParams() {
