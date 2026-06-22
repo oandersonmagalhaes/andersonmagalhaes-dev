@@ -91,7 +91,11 @@ jobs:
           echo "── 2/2 FTPS login (verify user/password) ──"
           # -v prints the FTP dialogue; server responses (e.g. 230/530) are NOT masked,
           # so we can confirm whether the user authenticated. Short timeouts = fast fail.
-          if curl -v --ssl-reqd --connect-timeout 10 --max-time 25 \
+          # --insecure skips TLS certificate *hostname* verification: Hostinger serves a
+          # wildcard cert (CN=*.hstgr.io) that won't match a custom-domain/IP FTP_SERVER,
+          # which would otherwise abort with curl (60) before login is ever attempted.
+          # This mirrors SamKirkland/FTP-Deploy-Action's default "loose" security below.
+          if curl -v --ssl-reqd --insecure --connect-timeout 10 --max-time 25 \
                   --user "$FTP_USERNAME:$FTP_PASSWORD" \
                   --list-only "ftp://$FTP_SERVER/"; then
             echo "✅ FTPS login succeeded for the configured user"
