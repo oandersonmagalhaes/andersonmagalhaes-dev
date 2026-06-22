@@ -51,7 +51,9 @@ jobs:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Show deploy target
-        run: echo "Deploying ref → ${{ github.event.inputs.tag || github.ref_name }}"
+        env:
+          DEPLOY_REF: ${{ github.event.inputs.tag || github.ref_name }}
+        run: echo "Deploying ref → $DEPLOY_REF"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
