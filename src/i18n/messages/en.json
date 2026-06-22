@@ -179,15 +179,14 @@
     },
     "bgRemover": {
       "title": "Background Remover",
-      "description": "Remove a solid background color from an image and export a transparent PNG. Runs entirely in your browser — nothing is uploaded.",
+      "description": "Remove the background from any image with AI and export a transparent PNG. Runs entirely in your browser — nothing is uploaded.",
       "upload": "Upload image",
+      "dropHint": "PNG, JPG or WEBP. Processed locally with an AI model.",
       "changeImage": "Change image",
-      "pickColorHint": "Click the background in the image to pick the color to remove.",
-      "selectedColor": "Selected color",
-      "noColor": "No color selected yet",
-      "tolerance": "Tolerance",
-      "softness": "Softness",
-      "despill": "Remove color fringe",
+      "loadingModel": "Loading AI model…",
+      "removingBg": "Removing background…",
+      "errorInvalidFile": "Please upload a valid image file (PNG, JPG, WEBP).",
+      "errorGeneric": "Could not process the image. Try again with another photo.",
       "download": "Download PNG",
       "reset": "Reset"
     }
